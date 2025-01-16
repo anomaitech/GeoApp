@@ -20,8 +20,16 @@
             color: #0056b3;
         }
 
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 20px;
+        }
+
         .converter {
-            margin: 20px auto;
+            margin: 20px;
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 10px;
@@ -29,6 +37,38 @@
             max-width: 400px;
             background-color: #ffffff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .history {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .history h2 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .history ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .history ul li {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
         }
 
         label {
@@ -65,11 +105,6 @@
             background-color: #003d80;
         }
 
-        h2 {
-            font-size: 1.5em;
-            color: #333;
-        }
-
         h3 {
             margin: 20px 0 0;
             font-size: 1.2em;
@@ -80,33 +115,54 @@
             font-weight: bold;
             color: #007bff;
         }
+
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #0056b3;
+            color: white;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
     <h1>Unit Converter App</h1>
 
-    <div class="converter">
-        <h2>Convert Units</h2>
-        <label for="unit-type">Select Unit Type:</label>
-        <select id="unit-type" onchange="updateUnits()">
-            <option value="length">Length</option>
-            <option value="weight">Weight</option>
-            <option value="temperature">Temperature</option>
-        </select>
+    <div class="container">
+        <div class="converter">
+            <h2>Convert Units</h2>
+            <label for="unit-type">Select Unit Type:</label>
+            <select id="unit-type" onchange="updateUnits()">
+                <option value="length">Length</option>
+                <option value="weight">Weight</option>
+                <option value="temperature">Temperature</option>
+            </select>
 
-        <label for="input-value">Enter Value:</label>
-        <input type="number" id="input-value" placeholder="Enter value">
+            <label for="input-value">Enter Value:</label>
+            <input type="number" id="input-value" placeholder="Enter value">
 
-        <label for="from-unit">From:</label>
-        <select id="from-unit"></select>
+            <label for="from-unit">From:</label>
+            <select id="from-unit"></select>
 
-        <label for="to-unit">To:</label>
-        <select id="to-unit"></select>
+            <label for="to-unit">To:</label>
+            <select id="to-unit"></select>
 
-        <button onclick="convertUnits()">Convert</button>
+            <button onclick="convertUnits()">Convert</button>
 
-        <h3>Result: <span id="result">-</span></h3>
+            <h3>Result: <span id="result">-</span></h3>
+        </div>
+
+        <div class="history">
+            <h2>Conversion History</h2>
+            <ul id="history-list">
+                <!-- Conversion history will appear here -->
+            </ul>
+        </div>
     </div>
+
+    <footer>
+        Created by Henok Kiflom Teklu
+    </footer>
 
     <script>
         const units = {
@@ -157,52 +213,51 @@
             const fromUnit = document.getElementById("from-unit").value;
             const toUnit = document.getElementById("to-unit").value;
             const result = document.getElementById("result");
+            const historyList = document.getElementById("history-list");
 
+            if (isNaN(inputValue)) {
+                result.textContent = "Invalid input";
+                return;
+            }
+
+            let convertedValue;
             if (unitType === "temperature") {
                 if (fromUnit === "Celsius" && toUnit === "Fahrenheit") {
-                    result.textContent = (inputValue * 9/5) + 32;
+                    convertedValue = (inputValue * 9/5) + 32;
                 } else if (fromUnit === "Fahrenheit" && toUnit === "Celsius") {
-                    result.textContent = (inputValue - 32) * 5/9;
+                    convertedValue = (inputValue - 32) * 5/9;
                 } else if (fromUnit === "Celsius" && toUnit === "Kelvin") {
-                    result.textContent = inputValue + 273.15;
+                    convertedValue = inputValue + 273.15;
                 } else if (fromUnit === "Kelvin" && toUnit === "Celsius") {
-                    result.textContent = inputValue - 273.15;
+                    convertedValue = inputValue - 273.15;
                 } else if (fromUnit === "Fahrenheit" && toUnit === "Kelvin") {
-                    result.textContent = ((inputValue - 32) * 5/9) + 273.15;
+                    convertedValue = ((inputValue - 32) * 5/9) + 273.15;
                 } else if (fromUnit === "Kelvin" && toUnit === "Fahrenheit") {
-                    result.textContent = ((inputValue - 273.15) * 9/5) + 32;
+                    convertedValue = ((inputValue - 273.15) * 9/5) + 32;
                 } else {
-                    result.textContent = inputValue;
+                    convertedValue = inputValue;
                 }
             } else {
                 const fromFactor = units[unitType].find(unit => unit.name === fromUnit)?.factor;
                 const toFactor = units[unitType].find(unit => unit.name === toUnit)?.factor;
                 if (fromFactor !== undefined && toFactor !== undefined) {
-                    result.textContent = ((inputValue / fromFactor) * toFactor).toFixed(4);
+                    convertedValue = ((inputValue / fromFactor) * toFactor).toFixed(4);
                 } else {
                     result.textContent = "Invalid Conversion";
+                    return;
                 }
             }
-        }
 
-        function updateTime() {
-            const date = new Date();
-            const day = date.getDate().toString().padStart(2, '0');
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            const seconds = date.getSeconds().toString().padStart(2, '0');
+            result.textContent = convertedValue;
 
-            const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-            const toDate = document.getElementById("date");
-            toDate.textContent = formattedTime; // Update the content of the element
+            // Add to history
+            const listItem = document.createElement("li");
+            listItem.textContent = `${inputValue} ${fromUnit} = ${convertedValue} ${toUnit}`;
+            historyList.appendChild(listItem);
         }
 
         // Initialize the unit options
         updateUnits();
-
-        // Update time every second
-        setInterval(updateTime, 1000);
     </script>
 </body>
 </html>
