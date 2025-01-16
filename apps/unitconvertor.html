@@ -1,6 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+
+
+<body>
+    <h1>Unit Converter App</h1>
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unit Converter App</title>
@@ -89,10 +92,6 @@
         }
     </style>
 </head>
-<body>
-    <h1>Unit Converter App</h1>
-
-    <div id="date"></div>
 
     <div class="converter">
         <h2>Convert Units</h2>
@@ -114,10 +113,10 @@
 
         <button onclick="convertUnits()">Convert</button>
 
-         
+        <h3>Result: <span id="result">-</span></h3>
+        
     </div>
-
-    <script>
+ <script>
         const units = {
             length: [
                 { name: "Meters", factor: 1 },
@@ -215,5 +214,6 @@
         // Initialize the unit options
         updateUnits();
     </script>
+
 </body>
 </html>
