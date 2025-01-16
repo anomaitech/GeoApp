@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Me</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,6 +44,18 @@
             max-width: 150px;
             margin: 10px;
         }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        #map {
+            height: 300px;
+            width: 100%;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -53,10 +66,10 @@
     <section>
         <h2>Personal Information</h2>
         <p><strong>Name:</strong> Henok Kiflom Teklu</p>
-        <p><strong>Info:</strong>PhD Student, Happily married , 2 beautiful kids</p>
+        <p><strong>Info:</strong> PhD Student, Happily married, 2 beautiful kids</p>
         <p><strong>Class Semester:</strong> Winter 2025</p>
-        <p><strong>Class Name:</strong>CI511-Geospatial software development</p>
-        <p><strong>Class Name:</strong>PhD Student</p>
+        <p><strong>Class Name:</strong> CI511-Geospatial Software Development</p>
+        <p><strong>Role:</strong> PhD Student</p>
     </section>
 
     <section>
@@ -81,5 +94,27 @@
             <a href="https://www.github.com" target="_blank">GitHub</a>
         </div>
     </section>
+
+    <footer>
+        <p>&copy; 2025 Henok Kiflom Teklu</p>
+        <p>BYU Location:</p>
+        <div id="map"></div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var map = L.map('map').setView([40.2508, -111.6493], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            L.marker([40.2508, -111.6493]).addTo(map)
+                .bindPopup('Brigham Young University')
+                .openPopup();
+        });
+    </script>
 </body>
 </html>
