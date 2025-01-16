@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        h1 {
+            margin: 20px 0;
+            font-size: 2em;
+            color: #0056b3;
+        }
+
+        .converter {
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus, button:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        button {
+            background-color: #0056b3;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #003d80;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        h3 {
+            margin: 20px 0 0;
+            font-size: 1.2em;
+            color: #0056b3;
+        }
+
+        #result {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        #date {
+            margin: 20px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Unit Converter App</h1>
+
+    <div id="date"></div>
+
+    <div class="converter">
+        <h2>Convert Units</h2>
+        <label for="unit-type">Select Unit Type:</label>
+        <select id="unit-type" onchange="updateUnits()">
+            <option value="length">Length</option>
+            <option value="weight">Weight</option>
+            <option value="temperature">Temperature</option>
+        </select>
+
+        <label for="input-value">Enter Value:</label>
+        <input type="number" id="input-value" placeholder="Enter value">
+
+        <label for="from-unit">From:</label>
+        <select id="from-unit"></select>
+
+        <label for="to-unit">To:</label>
+        <select id="to-unit"></select>
+
+        <button onclick="convertUnits()">Convert</button>
+
+          <h4>
+        Current Time:<span id="date">-</span>
+        </h4>
+    </div>
+
+    <script>
+        const units = {
+            length: [
+                { name: "Meters", factor: 1 },
+                { name: "Kilometers", factor: 0.001 },
+                { name: "Centimeters", factor: 100 },
+                { name: "Inches", factor: 39.3701 },
+                { name: "Feet", factor: 3.28084 }
+            ],
+            weight: [
+                { name: "Kilograms", factor: 1 },
+                { name: "Grams", factor: 1000 },
+                { name: "Pounds", factor: 2.20462 },
+                { name: "Ounces", factor: 35.274 }
+            ],
+            temperature: [
+                { name: "Celsius", factor: 1 },
+                { name: "Fahrenheit", factor: 1 },
+                { name: "Kelvin", factor: 1 }
+            ]
+        };
+
+        function updateUnits() {
+            const unitType = document.getElementById("unit-type").value;
+            const fromUnit = document.getElementById("from-unit");
+            const toUnit = document.getElementById("to-unit");
+
+            fromUnit.innerHTML = "";
+            toUnit.innerHTML = "";
+
+            units[unitType].forEach(unit => {
+                const option1 = document.createElement("option");
+                option1.value = unit.name;
+                option1.textContent = unit.name;
+                fromUnit.appendChild(option1);
+
+                const option2 = document.createElement("option");
+                option2.value = unit.name;
+                option2.textContent = unit.name;
+                toUnit.appendChild(option2);
+            });
+        }
+
+        function convertUnits() {
+            const unitType = document.getElementById("unit-type").value;
+            const inputValue = parseFloat(document.getElementById("input-value").value);
+            const fromUnit = document.getElementById("from-unit").value;
+            const toUnit = document.getElementById("to-unit").value;
+            const result = document.getElementById("result");
+
+            if (unitType === "temperature") {
+                if (fromUnit === "Celsius" && toUnit === "Fahrenheit") {
+                    result.textContent = (inputValue * 9/5) + 32;
+                } else if (fromUnit === "Fahrenheit" && toUnit === "Celsius") {
+                    result.textContent = (inputValue - 32) * 5/9;
+                } else if (fromUnit === "Celsius" && toUnit === "Kelvin") {
+                    result.textContent = inputValue + 273.15;
+                } else if (fromUnit === "Kelvin" && toUnit === "Celsius") {
+                    result.textContent = inputValue - 273.15;
+                } else if (fromUnit === "Fahrenheit" && toUnit === "Kelvin") {
+                    result.textContent = ((inputValue - 32) * 5/9) + 273.15;
+                } else if (fromUnit === "Kelvin" && toUnit === "Fahrenheit") {
+                    result.textContent = ((inputValue - 273.15) * 9/5) + 32;
+                } else {
+                    result.textContent = inputValue;
+                }
+            } else {
+                const fromFactor = units[unitType].find(unit => unit.name === fromUnit)?.factor;
+                const toFactor = units[unitType].find(unit => unit.name === toUnit)?.factor;
+                if (fromFactor !== undefined && toFactor !== undefined) {
+                    result.textContent = ((inputValue / fromFactor) * toFactor).toFixed(4);
+                } else {
+                    result.textContent = "Invalid Conversion";
+                }
+            }
+        }
+        function updateTime() {
+            const date = new Date();
+            const day=date.getDate().toString().padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+
+            const formattedTime = ` ${hours}:${minutes}:${seconds}`;
+
+            const toDate = document.getElementById("date");
+            toDate.textContent = formattedTime; // Update the content of the element
+        }
+
+        // Initialize the unit options
+        updateUnits();
+
+        // Update time every second
+        setInterval(updateTime, 1000);
+
+        // Initialize the unit options
+        updateUnits();
+    </script>
+</body>
+</html>
