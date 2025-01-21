@@ -1,120 +1,392 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Me</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-        section {
-            max-width: 800px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        img {
-            max-width: 100%;
-            border-radius: 8px;
-        }
-        .links a {
-            display: block;
-            margin: 10px 0;
-            color: #0066cc;
-            text-decoration: none;
-        }
-        .links a:hover {
-            text-decoration: underline;
-        }
-        .interests img {
-            max-width: 150px;
-            margin: 10px;
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-        }
-        #map {
-            height: 300px;
-            width: 100%;
-            margin-top: 10px;
-        }
-    </style>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Unit Converter App</title> <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <style> body { font-family: Arial, sans-serif; margin: 0; padding: 0; text-align: center; background-color: #f0f4f8; color: #333; }
+            h1 {
+        margin: 20px 0;
+        font-size: 2em;
+        color: #0056b3;
+    }
+
+    .container {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 800px;
+    }
+
+    .converter {
+        flex: 1;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .history {
+        flex: 1;
+        margin-left: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: left;
+    }
+
+    label {
+        display: block;
+        margin: 10px 0 5px;
+        font-size: 1em;
+        font-weight: bold;
+    }
+
+    input, select, button {
+        margin: 10px 0;
+        padding: 10px;
+        width: 100%;
+        font-size: 1em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    input:focus, select:focus, button:focus {
+        border-color: #0056b3;
+        outline: none;
+    }
+
+    button {
+        background-color: #0056b3;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #003d80;
+    }
+
+    h2 {
+        font-size: 1.5em;
+        color: #333;
+    }
+
+    h3 {
+        margin: 20px 0 0;
+        font-size: 1.2em;
+        color: #0056b3;
+    }
+
+    #result {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    #date {
+        margin: 20px 0;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .tab {
+        padding: 10px 20px;
+        background-color: #f0f4f8;
+        border: 1px solid #ccc;
+        cursor: pointer;
+    }
+
+    .tab.active {
+        background-color: #ffffff;
+        border-bottom: none;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .about-me {
+        max-width: 800px;
+        margin: 20px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .about-me img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+    .links a {
+        display: block;
+        margin: 10px 0;
+        color: #0066cc;
+        text-decoration: none;
+    }
+    .links a:hover {
+        text-decoration: underline;
+    }
+    .interests img {
+        max-width: 150px;
+        margin: 10px;
+    }
+    #map {
+        height: 300px;
+        width: 100%;
+        margin-top: 10px;
+    }
+</style>
 </head>
 <body>
-    <header>
-        <h1>About Me</h1>
-    </header>
+<h1>Unit Converter App</h1>
+<div id="date"></div>
 
-    <section>
-        <h2>Personal Information</h2>
-        <p><strong>Name:</strong> Henok Kiflom Teklu</p>
-        <p><strong>Info:</strong> PhD Student, Happily married, 2 beautiful kids</p>
-        <p><strong>Class Semester:</strong> Winter 2025</p>
-        <p><strong>Class Name:</strong> CI511-Geospatial Software Development</p>
-        <p><strong>Role:</strong> PhD Student</p>
-    </section>
+<div class="tabs">
+    <div class="tab active" onclick="showTab(1)">Project 1</div>
+    <div class="tab" onclick="showTab(2)">Project 2</div>
+    <div class="tab" onclick="showTab(3)">Project 3</div>
+    <div class="tab" onclick="showTab(4)">Project 4</div>
+</div>
 
-    <section>
-        <h2>My Picture</h2>
-        <img src="henok.jpeg" alt="My Picture">
-    </section>
+<div class="tab-content active" id="project1">
+    <div class="container">
+        <div class="converter">
+            <h2>Convert Units</h2>
+            <label for="unit-type">Select Unit Type:</label>
+            <select id="unit-type" onchange="updateUnits()">
+                <option value="length">Length</option>
+                <option value="weight">Weight</option>
+                <option value="temperature">Temperature</option>
+            </select>
 
-    <section>
-        <h2>Things I'm Interested In</h2>
-        <div class="interests">
-            <img src="ai.jpeg" alt="Artificial Intelligence">
-            <img src="hydroinformatics.jpg" alt="Hydroinformatics">
-            <img src="nature.jpg" alt="Nature">
+            <label for="input-value">Enter Value:</label>
+            <input type="number" id="input-value" placeholder="Enter value">
+
+            <label for="from-unit">From:</label>
+            <select id="from-unit"></select>
+
+            <label for="to-unit">To:</label>
+            <select id="to-unit"></select>
+
+            <button onclick="convertUnits()">Convert</button>
+
+            <h3>Result: <span id="result"></span></h3>
+
+            <h4>Current Time: <span id="date">-</span></h4>
         </div>
-    </section>
 
-    <section>
-        <h2>Links I Like</h2>
-        <div class="links">
-            <a href="https://www.byu.edu" target="_blank">Brigham Young University</a>
-            <a href="https://www.instagram.com" target="_blank">Instagram</a>
-            <a href="https://www.github.com" target="_blank">GitHub</a>
+        <div class="history">
+            <h2>Conversion History</h2>
+            <ul id="history-list"></ul>
         </div>
-    </section>
+    </div>
+</div>
 
-    <footer>
-        <p>&copy; 2025 Henok Kiflom Teklu</p>
-        <p>BYU Location:</p>
-        <div id="map"></div>
-    </footer>
+<div class="tab-content" id="project2">
+    <h2>Project 2 Content</h2>
+    <p>This is where Project 2 content would go.</p>
+</div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var map = L.map('map').setView([40.2508, -111.6493], 15);
+<div class="tab-content" id="project3">
+    <h2>Project 3 Content</h2>
+    <p>This is where Project 3 content would go.</p>
+</div>
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+<div class="tab-content" id="project4">
+    <h2>Project 4 Content</h2>
+    <p>This is where Project 4 content would go.</p>
+</div>
 
-            L.marker([40.2508, -111.6493]).addTo(map)
-                .bindPopup('Brigham Young University')
-                .openPopup();
+<section class="about-me">
+    <h2>Personal Information</h2>
+    <p><strong>Name:</strong> Henok Kiflom Teklu</p>
+    <p><strong>Info:</strong> PhD Student, Happily married, 2 beautiful kids</p>
+    <p><strong>Class Semester:</strong> Winter 2025</p>
+    <p><strong>Class Name:</strong> CI511-Geospatial Software Development</p>
+    <p><strong>Role:</strong> PhD Student</p>
+</section>
+
+<section class="about-me">
+    <h2>My Picture</h2>
+    <img src="henok.jpeg" alt="My Picture">
+</section>
+
+<section class="about-me">
+    <h2>Things I'm Interested In</h2>
+    <div class="interests">
+        <img src="ai.jpeg" alt="Artificial Intelligence">
+        <img src="hydroinformatics.jpg" alt="Hydroinformatics">
+        <img src="nature.jpg" alt="Nature">
+    </div>
+</section>
+
+<section class="about-me">
+    <h2>Links I Like</h2>
+    <div class="links">
+        <a href="https://www.byu.edu" target="_blank">Brigham Young University</a>
+        <a href="https://www.instagram.com" target="_blank">Instagram</a>
+        <a href="https://www.github.com" target="_blank">GitHub</a>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 Henok Kiflom Teklu</p>
+    <p>BYU Location:</p>
+    <div id="map"></div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    const units = {
+        length: [
+            { name: "Meters", factor: 1 },
+            { name: "Kilometers", factor: 0.001 },
+            { name: "Centimeters", factor: 100 },
+            { name: "Inches", factor: 39.3701 },
+            { name: "Feet", factor: 3.28084 }
+        ],
+        weight: [
+            { name: "Kilograms", factor: 1 },
+            { name: "Grams", factor: 1000 },
+            { name: "Pounds", factor: 2.20462 },
+            { name: "Ounces", factor: 35.274 }
+        ],
+        temperature: [
+            { name: "Celsius", factor: 1 },
+            { name: "Fahrenheit", factor: 1 },
+            { name: "Kelvin", factor: 1 }
+        ]
+    };
+
+    function updateUnits() {
+        const unitType = document.getElementById("unit-type").value;
+        const fromUnit = document.getElementById("from-unit");
+        const toUnit = document.getElementById("to-unit");
+
+        fromUnit.innerHTML = "";
+        toUnit.innerHTML = "";
+
+        units[unitType].forEach(unit => {
+            const option1 = document.createElement("option");
+            option1.value = unit.name;
+            option1.textContent = unit.name;
+            fromUnit.appendChild(option1);
+
+            const option2 = document.createElement("option");
+            option2.value = unit.name;
+            option2.textContent = unit.name;
+            toUnit.appendChild(option2);
         });
-    </script>
-</body>
-</html>
+    }
+
+    function convertUnits() {
+        const unitType = document.getElementById("unit-type").value;
+        const inputValue = parseFloat(document.getElementById("input-value").value);
+        const fromUnit = document.getElementById("from-unit").value;
+        const toUnit = document.getElementById("to-unit").value;
+        const result = document.getElementById("result");
+        let convertedValue;
+
+        if (unitType === "temperature") {
+            if (fromUnit === "Celsius" && toUnit === "Fahrenheit") {
+                convertedValue = (inputValue * 9/5) + 32;
+            } else if (fromUnit === "Fahrenheit" && toUnit === "Celsius") {
+                convertedValue = (inputValue - 32) * 5/9;
+            } else if (fromUnit === "Celsius" && toUnit === "Kelvin") {
+                convertedValue = inputValue + 273.15;
+            } else if (fromUnit === "Kelvin" && toUnit === "Celsius") {
+                convertedValue = inputValue - 273.15;
+            } else if (fromUnit === "Fahrenheit" && toUnit === "Kelvin") {
+                convertedValue = ((inputValue - 32) * 5/9) + 273.15;
+            } else if (fromUnit === "Kelvin" && toUnit === "Fahrenheit") {
+                convertedValue = ((inputValue - 273.15) * 9/5) + 32;
+            } else {
+                convertedValue = inputValue;
+            }
+        } else {
+            const fromFactor = units[unitType].find(unit => unit.name === fromUnit)?.factor;
+            const toFactor = units[unitType].find(unit => unit.name === toUnit)?.factor;
+            if (fromFactor !== undefined && toFactor !== undefined) {
+                convertedValue = ((inputValue / fromFactor) * toFactor);
+            } else {
+                convertedValue = "Invalid Conversion";
+            }
+        }
+
+        result.textContent = typeof convertedValue === 'number' ? convertedValue.toFixed(4) : convertedValue;
+        addToHistory(inputValue, fromUnit, convertedValue, toUnit);
+    }
+
+    function addToHistory(fromValue, fromUnit, toValue, toUnit) {
+        const historyList = document.getElementById("history-list");
+        const listItem = document.createElement("li");
+        const currentTime = new Date().toLocaleTimeString();
+        listItem.textContent = `${currentTime} - ${fromValue} ${fromUnit} = ${toValue} ${toUnit}`;
+        historyList.prepend(listItem);
+
+        // Limit history to last 5 conversions
+        if (historyList.children.length > 5) {
+            historyList.removeChild(historyList.lastChild);
+        }
+    }
+
+    function updateTime() {
+        const date = new Date();
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+
+        const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+        const toDate = document.getElementById("date");
+        toDate.textContent = formattedTime;
+    }
+
+    function showTab(tabNumber) {
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach((tab, index) => {
+            if (index + 1 === tabNumber) {
+                tab.classList.add('active');
+                tabContents[index].classList.add('active');
+            } else {
+                tab.classList.remove('active');
+                tabContents[index].classList.remove('active');
+            }
+        });
+    }
+
+    // Initialize the unit options
+    updateUnits();
+
+    // Update time every second
+    setInterval(updateTime, 1000);
+
+    // Initialize the map
+    document.addEventListener('DOMContentLoaded', function() {
+        var map = L.map('map').setView([40.2508, -111.6493], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([40.2508, -111.6493]).addTo(map)
+            .bindPopup('Brigham Young University')
+            .openPopup();
+    });
+</script>
