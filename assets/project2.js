@@ -1,3 +1,7 @@
+/************************************************************/
+/*            Project 2: Leaflet Map (Mekelle)             */
+/*       + Haversine + Great-Circle Spherical Interp       */
+/************************************************************/
 
 // 1) Center the map on Mekelle (Home)
 let map2 = L.map('map2').setView([13.479694, 39.467275], 13);
@@ -148,9 +152,6 @@ function drawLocationsAndLine() {
   let bounds = L.latLngBounds(gcPoints);
   map2.fitBounds(bounds, { padding: [50, 50] });
 }
-</script>
-
-<script>
 // ========================== Optional Test Cases ==========================
 const testCases = [
   {
