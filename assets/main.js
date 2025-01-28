@@ -1,12 +1,12 @@
-/****************************************************/
-/* 1) TABS + DATE/TIME + UNIT CONVERTER (Project1)  */
-/****************************************************/
+/************************************************************/
+/*      Tab Switching + Date/Time + Unit Converter          */
+/************************************************************/
 function showTab(tabNum) {
   // remove 'active' class from all .tab and .tab-content
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-  // add 'active' class to chosen ones
+  // add 'active' to chosen ones
   document.querySelector('.tab:nth-child(' + tabNum + ')').classList.add('active');
   document.getElementById('project' + tabNum).classList.add('active');
 
@@ -38,10 +38,10 @@ const unitConfig = {
 function updateUnits() {
   const unitType = document.getElementById('unit-type').value;
   const fromUnit = document.getElementById('from-unit');
-  const toUnit = document.getElementById('to-unit');
+  const toUnit   = document.getElementById('to-unit');
 
   fromUnit.innerHTML = '';
-  toUnit.innerHTML = '';
+  toUnit.innerHTML   = '';
 
   unitConfig[unitType].forEach(u => {
     const opt1 = document.createElement('option');
@@ -57,10 +57,10 @@ function updateUnits() {
 }
 
 function convertUnits() {
-  const unitType = document.getElementById('unit-type').value;
+  const unitType   = document.getElementById('unit-type').value;
   const inputValue = parseFloat(document.getElementById('input-value').value);
-  const fromVal = document.getElementById('from-unit').value;
-  const toVal = document.getElementById('to-unit').value;
+  const fromVal    = document.getElementById('from-unit').value;
+  const toVal      = document.getElementById('to-unit').value;
 
   if (isNaN(inputValue)) {
     alert("Please enter a valid number.");
@@ -68,50 +68,53 @@ function convertUnits() {
   }
   let result = 0;
 
+  // LENGTH
   if (unitType === 'length') {
     let inMeters = 0;
     switch(fromVal) {
-      case 'meters': inMeters = inputValue; break;
+      case 'meters':     inMeters = inputValue; break;
       case 'kilometers': inMeters = inputValue * 1000; break;
-      case 'miles': inMeters = inputValue * 1609.34; break;
-      case 'feet': inMeters = inputValue * 0.3048; break;
+      case 'miles':      inMeters = inputValue * 1609.34; break;
+      case 'feet':       inMeters = inputValue * 0.3048; break;
     }
     switch(toVal) {
-      case 'meters': result = inMeters; break;
+      case 'meters':     result = inMeters; break;
       case 'kilometers': result = inMeters / 1000; break;
-      case 'miles': result = inMeters / 1609.34; break;
-      case 'feet': result = inMeters / 0.3048; break;
+      case 'miles':      result = inMeters / 1609.34; break;
+      case 'feet':       result = inMeters / 0.3048; break;
     }
   }
+  // WEIGHT
   else if (unitType === 'weight') {
     let inKg = 0;
     switch(fromVal) {
       case 'kilograms': inKg = inputValue; break;
-      case 'grams': inKg = inputValue / 1000; break;
-      case 'pounds': inKg = inputValue * 0.453592; break;
+      case 'grams':     inKg = inputValue / 1000; break;
+      case 'pounds':    inKg = inputValue * 0.453592; break;
     }
     switch(toVal) {
       case 'kilograms': result = inKg; break;
-      case 'grams': result = inKg * 1000; break;
-      case 'pounds': result = inKg / 0.453592; break;
+      case 'grams':     result = inKg * 1000; break;
+      case 'pounds':    result = inKg / 0.453592; break;
     }
   }
+  // TEMPERATURE
   else if (unitType === 'temperature') {
     let inC = 0;
     switch(fromVal) {
-      case 'celsius': inC = inputValue; break;
+      case 'celsius':    inC = inputValue; break;
       case 'fahrenheit': inC = (inputValue - 32) * 5/9; break;
     }
     switch(toVal) {
-      case 'celsius': result = inC; break;
+      case 'celsius':    result = inC; break;
       case 'fahrenheit': result = (inC * 9/5) + 32; break;
     }
   }
 
-  // display
+  // Display
   document.getElementById('result').textContent = result.toFixed(2);
 
-  // add to history
+  // Add to history
   const histList = document.getElementById('history-list');
   const li = document.createElement('li');
   li.textContent = `${inputValue} ${fromVal} -> ${result.toFixed(2)} ${toVal}`;
