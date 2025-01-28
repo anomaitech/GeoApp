@@ -1,141 +1,122 @@
+/****************************************************/
+/* 1) TABS + DATE/TIME + UNIT CONVERTER (Project1)  */
+/****************************************************/
+function showTab(tabNum) {
+  // remove 'active' class from all .tab and .tab-content
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-    const units = {
-        length: [
-            { name: "Meters", factor: 1 },
-            { name: "Kilometers", factor: 0.001 },
-            { name: "Centimeters", factor: 100 },
-            { name: "Inches", factor: 39.3701 },
-            { name: "Feet", factor: 3.28084 }
-        ],
-        weight: [
-            { name: "Kilograms", factor: 1 },
-            { name: "Grams", factor: 1000 },
-            { name: "Pounds", factor: 2.20462 },
-            { name: "Ounces", factor: 35.274 }
-        ],
-        temperature: [
-            { name: "Celsius", factor: 1 },
-            { name: "Fahrenheit", factor: 1 },
-            { name: "Kelvin", factor: 1 }
-        ]
-    };
+  // add 'active' class to chosen ones
+  document.querySelector('.tab:nth-child(' + tabNum + ')').classList.add('active');
+  document.getElementById('project' + tabNum).classList.add('active');
 
-    function updateUnits() {
-        const unitType = document.getElementById("unit-type").value;
-        const fromUnit = document.getElementById("from-unit");
-        const toUnit = document.getElementById("to-unit");
+  // if we just activated Project 2 tab, ensure the map is resized properly
+  if (tabNum === 2 && typeof map2 !== 'undefined') {
+    setTimeout(() => {
+      map2.invalidateSize();
+    }, 200);
+  }
+}
 
-        fromUnit.innerHTML = "";
-        toUnit.innerHTML = "";
+// keep date/time updated
+function setDateTime() {
+  const now = new Date().toLocaleString();
+  const dateEl = document.getElementById('dateNow');
+  if (dateEl) {
+    dateEl.textContent = now;
+  }
+}
+setInterval(setDateTime, 1000);
 
-        units[unitType].forEach(unit => {
-            const option1 = document.createElement("option");
-            option1.value = unit.name;
-            option1.textContent = unit.name;
-            fromUnit.appendChild(option1);
+// minimal unit converter
+const unitConfig = {
+  length: ["meters", "kilometers", "miles", "feet"],
+  weight: ["kilograms", "grams", "pounds"],
+  temperature: ["celsius", "fahrenheit"]
+};
 
-            const option2 = document.createElement("option");
-            option2.value = unit.name;
-            option2.textContent = unit.name;
-            toUnit.appendChild(option2);
-        });
+function updateUnits() {
+  const unitType = document.getElementById('unit-type').value;
+  const fromUnit = document.getElementById('from-unit');
+  const toUnit = document.getElementById('to-unit');
+
+  fromUnit.innerHTML = '';
+  toUnit.innerHTML = '';
+
+  unitConfig[unitType].forEach(u => {
+    const opt1 = document.createElement('option');
+    opt1.value = u;
+    opt1.textContent = u;
+    fromUnit.appendChild(opt1);
+
+    const opt2 = document.createElement('option');
+    opt2.value = u;
+    opt2.textContent = u;
+    toUnit.appendChild(opt2);
+  });
+}
+
+function convertUnits() {
+  const unitType = document.getElementById('unit-type').value;
+  const inputValue = parseFloat(document.getElementById('input-value').value);
+  const fromVal = document.getElementById('from-unit').value;
+  const toVal = document.getElementById('to-unit').value;
+
+  if (isNaN(inputValue)) {
+    alert("Please enter a valid number.");
+    return;
+  }
+  let result = 0;
+
+  if (unitType === 'length') {
+    let inMeters = 0;
+    switch(fromVal) {
+      case 'meters': inMeters = inputValue; break;
+      case 'kilometers': inMeters = inputValue * 1000; break;
+      case 'miles': inMeters = inputValue * 1609.34; break;
+      case 'feet': inMeters = inputValue * 0.3048; break;
     }
-
-    function convertUnits() {
-        const unitType = document.getElementById("unit-type").value;
-        const inputValue = parseFloat(document.getElementById("input-value").value);
-        const fromUnit = document.getElementById("from-unit").value;
-        const toUnit = document.getElementById("to-unit").value;
-        const result = document.getElementById("result");
-        let convertedValue;
-
-        if (unitType === "temperature") {
-            if (fromUnit === "Celsius" && toUnit === "Fahrenheit") {
-                convertedValue = (inputValue * 9/5) + 32;
-            } else if (fromUnit === "Fahrenheit" && toUnit === "Celsius") {
-                convertedValue = (inputValue - 32) * 5/9;
-            } else if (fromUnit === "Celsius" && toUnit === "Kelvin") {
-                convertedValue = inputValue + 273.15;
-            } else if (fromUnit === "Kelvin" && toUnit === "Celsius") {
-                convertedValue = inputValue - 273.15;
-            } else if (fromUnit === "Fahrenheit" && toUnit === "Kelvin") {
-                convertedValue = ((inputValue - 32) * 5/9) + 273.15;
-            } else if (fromUnit === "Kelvin" && toUnit === "Fahrenheit") {
-                convertedValue = ((inputValue - 273.15) * 9/5) + 32;
-            } else {
-                convertedValue = inputValue;
-            }
-        } else {
-            const fromFactor = units[unitType].find(unit => unit.name === fromUnit)?.factor;
-            const toFactor = units[unitType].find(unit => unit.name === toUnit)?.factor;
-            if (fromFactor !== undefined && toFactor !== undefined) {
-                convertedValue = ((inputValue / fromFactor) * toFactor);
-            } else {
-                convertedValue = "Invalid Conversion";
-            }
-        }
-
-        result.textContent = typeof convertedValue === 'number' ? convertedValue.toFixed(4) : convertedValue;
-        addToHistory(inputValue, fromUnit, convertedValue, toUnit);
+    switch(toVal) {
+      case 'meters': result = inMeters; break;
+      case 'kilometers': result = inMeters / 1000; break;
+      case 'miles': result = inMeters / 1609.34; break;
+      case 'feet': result = inMeters / 0.3048; break;
     }
-
-    function addToHistory(fromValue, fromUnit, toValue, toUnit) {
-        const historyList = document.getElementById("history-list");
-        const listItem = document.createElement("li");
-        const currentTime = new Date().toLocaleTimeString();
-        listItem.textContent = `${currentTime} - ${fromValue} ${fromUnit} = ${toValue} ${toUnit}`;
-        historyList.prepend(listItem);
-
-        // Limit history to last 5 conversions
-        if (historyList.children.length > 5) {
-            historyList.removeChild(historyList.lastChild);
-        }
+  }
+  else if (unitType === 'weight') {
+    let inKg = 0;
+    switch(fromVal) {
+      case 'kilograms': inKg = inputValue; break;
+      case 'grams': inKg = inputValue / 1000; break;
+      case 'pounds': inKg = inputValue * 0.453592; break;
     }
-
-    function updateTime() {
-        const date = new Date();
-        const day = date.getDate().toString().padStart(2, '0');
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        const seconds = date.getSeconds().toString().padStart(2, '0');
-
-        const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-        const toDate = document.getElementById("date");
-        toDate.textContent = formattedTime;
+    switch(toVal) {
+      case 'kilograms': result = inKg; break;
+      case 'grams': result = inKg * 1000; break;
+      case 'pounds': result = inKg / 0.453592; break;
     }
-
-    function showTab(tabNumber) {
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabs.forEach((tab, index) => {
-            if (index + 1 === tabNumber) {
-                tab.classList.add('active');
-                tabContents[index].classList.add('active');
-            } else {
-                tab.classList.remove('active');
-                tabContents[index].classList.remove('active');
-            }
-        });
+  }
+  else if (unitType === 'temperature') {
+    let inC = 0;
+    switch(fromVal) {
+      case 'celsius': inC = inputValue; break;
+      case 'fahrenheit': inC = (inputValue - 32) * 5/9; break;
     }
+    switch(toVal) {
+      case 'celsius': result = inC; break;
+      case 'fahrenheit': result = (inC * 9/5) + 32; break;
+    }
+  }
 
-    // Initialize the unit options
-    updateUnits();
+  // display
+  document.getElementById('result').textContent = result.toFixed(2);
 
-    // Update time every second
-    setInterval(updateTime, 1000);
+  // add to history
+  const histList = document.getElementById('history-list');
+  const li = document.createElement('li');
+  li.textContent = `${inputValue} ${fromVal} -> ${result.toFixed(2)} ${toVal}`;
+  histList.prepend(li);
+}
 
-    // Initialize the map
-    document.addEventListener('DOMContentLoaded', function() {
-        var map = L.map('map').setView([40.2508, -111.6493], 15);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        L.marker([40.2508, -111.6493]).addTo(map)
-            .bindPopup('Brigham Young University')
-            .openPopup();
-    });
+// init dropdown
+updateUnits();

@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unit Converter App</title>
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <!-- Optional custom CSS -->
     <link rel="stylesheet" href="assets/main.css"/>
+
+
 </head>
 <body>
-<h1>Unit Converter App</h1>
+
 <div id="date"></div>
 
 <div class="tabs">
@@ -17,6 +22,7 @@
     <div class="tab" onclick="showTab(4)">Project 4</div>
 </div>
 
+<!-- ========================== Project 1: Unit Converter ========================== -->
 <div class="tab-content active" id="project1">
     <div class="container">
         <div class="converter">
@@ -41,7 +47,7 @@
 
             <h3>Result: <span id="result"></span></h3>
 
-            <h4>Current Time: <span id="date">-</span></h4>
+            <h4>Current Time: <span id="dateNow">-</span></h4>
         </div>
 
         <div class="history">
@@ -51,21 +57,47 @@
     </div>
 </div>
 
+<!-- ========================== Project 2: Map ========================== -->
 <div class="tab-content" id="project2">
-    <h2>Project 2 Content</h2>
-    <p>This is where Project 2 content would go.</p>
+    <h2>Part 1</h2>
+    <p>
+      This map is zoomed to my hometown in <b>Mekelle City, Ethiopia</b>, with markers for Home, School, and Church.
+      It includes a polygon to show my home boundary and a circle for a 10-minute walk radius.
+    </p>
+    <div id="map2" style="width: 100%; height: 500px; margin-bottom: 1rem;"></div>
+
+    <h2>Part 2</h2>
+    <p>
+      Enter two locations below (latitude,longitude) to place markers and draw a line between them.
+      The distance is computed using the haversine formula (great circle path).
+    </p>
+    <div style="margin-bottom: 1rem;">
+      <label for="location1">Location 1 (lat,lng):</label>
+      <input type="text" id="location1" placeholder="e.g. 13.479694, 39.467275" style="width: 200px;">
+    </div>
+    <div style="margin-bottom: 1rem;">
+      <label for="location2">Location 2 (lat,lng):</label>
+      <input type="text" id="location2" placeholder="e.g. 13.489424, 39.474480" style="width: 200px;">
+    </div>
+    <button onclick="drawLocationsAndLine()">Draw &amp; Compute Distance</button>
+    <div>
+      <h3>Distance: <span id="distanceResult"></span></h3>
+    </div>
 </div>
 
+<!-- ========================== Project 3 ========================== -->
 <div class="tab-content" id="project3">
     <h2>Project 3 Content</h2>
     <p>This is where Project 3 content would go.</p>
 </div>
 
+<!-- ========================== Project 4 ========================== -->
 <div class="tab-content" id="project4">
     <h2>Project 4 Content</h2>
     <p>This is where Project 4 content would go.</p>
 </div>
 
+<!-- ========================== Personal Info / Links ========================== -->
 <section class="about-me">
     <h2>Personal Information</h2>
     <p><strong>Name:</strong> Henok Kiflom Teklu</p>
@@ -104,6 +136,11 @@
     <div id="map"></div>
 </footer>
 
+<!-- ========================== Leaflet Scripts ========================== -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+ <script src="assets/main.js"></script>
+ <script src="assets/project2.js"></script>
 
-<script src="assets/main.js"></script>
+
+</body>
+</html>
