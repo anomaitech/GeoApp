@@ -14,7 +14,7 @@ function showTab(tabNum) {
   if (tabNum === 2 && typeof map2 !== 'undefined') {
     setTimeout(() => {
       map2.invalidateSize();
-    }, 200);
+    }, 50);
   }
 }
 
@@ -123,3 +123,5 @@ function convertUnits() {
 
 // init dropdown
 updateUnits();
+
+
