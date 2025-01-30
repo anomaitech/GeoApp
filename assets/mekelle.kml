@@ -1,166 +1,158 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
 <Document>
-	<name>mekelle</name>
-	<gx:CascadingStyle kml:id="__managed_style_201324CE1F35EAB39A93">
-		<Style>
-			<IconStyle>
-				<scale>1.2</scale>
-				<Icon>
-					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
-				</Icon>
-				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
-			</IconStyle>
-			<LabelStyle>
-			</LabelStyle>
-			<LineStyle>
-				<color>ff2dc0fb</color>
-				<width>3</width>
-			</LineStyle>
-			<PolyStyle>
-				<color>40ffffff</color>
-			</PolyStyle>
-			<BalloonStyle>
-				<displayMode>hide</displayMode>
-			</BalloonStyle>
-		</Style>
-	</gx:CascadingStyle>
-	<gx:CascadingStyle kml:id="__managed_style_19559A4A0C35EAB39A93">
-		<Style>
-			<IconStyle>
-				<Icon>
-					<href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
-				</Icon>
-				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
-			</IconStyle>
-			<LabelStyle>
-			</LabelStyle>
-			<LineStyle>
-				<color>ff2dc0fb</color>
-				<width>2</width>
-			</LineStyle>
-			<PolyStyle>
-				<color>40ffffff</color>
-			</PolyStyle>
-			<BalloonStyle>
-				<displayMode>hide</displayMode>
-			</BalloonStyle>
-		</Style>
-	</gx:CascadingStyle>
-	<StyleMap id="__managed_style_00BA0F673735EAB39A93">
-		<Pair>
-			<key>normal</key>
-			<styleUrl>#__managed_style_19559A4A0C35EAB39A93</styleUrl>
-		</Pair>
-		<Pair>
-			<key>highlight</key>
-			<styleUrl>#__managed_style_201324CE1F35EAB39A93</styleUrl>
-		</Pair>
-	</StyleMap>
-	<Placemark id="02AE20A26D35EAB39A8F">
-		<name>mekelle</name>
-		<LookAt>
-			<longitude>39.4705161389457</longitude>
-			<latitude>13.48388214352883</latitude>
-			<altitude>2086.897908495568</altitude>
-			<heading>359.9999991404968</heading>
-			<tilt>0</tilt>
-			<gx:fovy>35</gx:fovy>
-			<range>307.52147765259</range>
-			<altitudeMode>absolute</altitudeMode>
-		</LookAt>
-		<styleUrl>#__managed_style_00BA0F673735EAB39A93</styleUrl>
-		<Polygon>
-			<outerBoundaryIs>
-				<LinearRing>
-					<coordinates>
-						39.47012165458577,13.48397500225472,0 39.47015706331938,13.48394828381921,0 39.47022817761832,13.48406259555539,0 39.47018148881412,13.4840885068294,0 39.47012165458577,13.48397500225472,0
-					</coordinates>
-				</LinearRing>
-			</outerBoundaryIs>
-		</Polygon>
-	</Placemark>
-	<Placemark id="00103652F335EAB4720C">
-		<name>atse yohannes school</name>
-		<LookAt>
-			<longitude>39.47469861655453</longitude>
-			<latitude>13.48837630166613</latitude>
-			<altitude>2082.748818256611</altitude>
-			<heading>0</heading>
-			<tilt>0</tilt>
-			<gx:fovy>35</gx:fovy>
-			<range>1341.991717708006</range>
-			<altitudeMode>absolute</altitudeMode>
-		</LookAt>
-		<styleUrl>#__managed_style_00BA0F673735EAB39A93</styleUrl>
-		<Polygon>
-			<outerBoundaryIs>
-				<LinearRing>
-					<coordinates>
-						39.47330245889917,13.48798456963285,0 39.47374490507123,13.48789369777866,0 39.4746540308775,13.48762722792977,0 39.47549009209027,13.4873348221535,0 39.47635446736816,13.4868958243924,0 39.47620134917595,13.48738043031518,0 39.47609335698657,13.48813750889335,0 39.47601790599335,13.48905399770545,0 39.47577783813336,13.49000712622055,0 39.47502977936838,13.49062119103064,0 39.47472570814511,13.49027779335437,0 39.4738671066475,13.48937254964621,0 39.47292348053298,13.48823196949789,0 39.47330245889917,13.48798456963285,0
-					</coordinates>
-				</LinearRing>
-			</outerBoundaryIs>
-		</Polygon>
-	</Placemark>
-	<Placemark id="0AB70426B435EAB53C6B">
-		<name>stadium</name>
-		<LookAt>
-			<longitude>39.47304529213387</longitude>
-			<latitude>13.48823434905382</latitude>
-			<altitude>2075.512376192311</altitude>
-			<heading>0</heading>
-			<tilt>0</tilt>
-			<gx:fovy>35</gx:fovy>
-			<range>4393.859466622816</range>
-			<altitudeMode>absolute</altitudeMode>
-		</LookAt>
-		<styleUrl>#__managed_style_00BA0F673735EAB39A93</styleUrl>
-		<Point>
-			<coordinates>39.47765550309687,13.48769284273912,2091.639437960848</coordinates>
-		</Point>
-	</Placemark>
-	<Placemark id="0FE45188A835EAB68C63">
-		<name>church</name>
-		<LookAt>
-			<longitude>39.47150528796202</longitude>
-			<latitude>13.50770351255869</latitude>
-			<altitude>2036.55557879851</altitude>
-			<heading>0</heading>
-			<tilt>0</tilt>
-			<gx:fovy>35</gx:fovy>
-			<range>914.3257930221444</range>
-			<altitudeMode>absolute</altitudeMode>
-		</LookAt>
-		<styleUrl>#__managed_style_00BA0F673735EAB39A93</styleUrl>
-		<Polygon>
-			<outerBoundaryIs>
-				<LinearRing>
-					<coordinates>
-						39.47086088222091,13.5081726698948,0 39.47100966948884,13.50810395333284,0 39.471444108235,13.50798950328605,0 39.47157479491069,13.50845801016839,0 39.47106034062187,13.50862436780602,0 39.47086088222091,13.5081726698948,0
-					</coordinates>
-				</LinearRing>
-			</outerBoundaryIs>
-		</Polygon>
-	</Placemark>
-	<Placemark id="01A4AAAC8A35EAB99765">
-		<name>church to home</name>
-		<LookAt>
-			<longitude>39.46882559958351</longitude>
-			<latitude>13.48557700316101</latitude>
-			<altitude>2074.340706958255</altitude>
-			<heading>0</heading>
-			<tilt>0</tilt>
-			<gx:fovy>35</gx:fovy>
-			<range>1309.367206980387</range>
-			<altitudeMode>absolute</altitudeMode>
-		</LookAt>
-		<styleUrl>#__managed_style_00BA0F673735EAB39A93</styleUrl>
-		<LineString>
-			<coordinates>
-				39.47148952987878,13.5079165759876,0 39.47115201590442,13.50711856283683,0 39.4702632858075,13.50737694687127,0 39.46994141470733,13.50653753046743,0 39.46918476922969,13.5060125440779,0 39.46864424330078,13.50473086085016,0 39.46750419149276,13.50162849603885,0 39.46646732593137,13.49899614138103,0 39.46564250732575,13.49663953102601,0 39.46781755134191,13.49594870007453,0 39.46545802415981,13.48970376995475,0 39.46829454441219,13.48895252833226,0 39.47021025433716,13.4871894242422,0 39.46889268172929,13.48603970538147,0 39.46860091949451,13.48484218494585,0 39.46901050037572,13.48441018115052,0 39.46934147255423,13.48414647234692,0 39.4694329127361,13.48379738656551,0 39.46991765069711,13.48283862032929,0 39.47009392084153,13.48255116639601,0 39.47018084126984,13.483063607404,0 39.47031887015866,13.48349951468205,0 39.47048476759275,13.48381540984743,0
-			</coordinates>
-		</LineString>
-	</Placemark>
+    <name>Mekelle Map</name>
+
+    <Style id="highlightStyle">
+        <IconStyle>
+            <scale>1.2</scale>
+            <Icon>
+                <href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+            </Icon>
+        </IconStyle>
+        <LineStyle>
+            <color>ff2dc0fb</color>
+            <width>3</width>
+        </LineStyle>
+        <PolyStyle>
+            <color>40ffffff</color>
+        </PolyStyle>
+    </Style>
+
+    <Placemark id="mekelle">
+        <name>Mekelle</name>
+        <description><![CDATA[
+            <h3>Mekelle City</h3>
+            <p>The capital of the Tigray region of Ethiopia, known for its rich history and vibrant culture.</p>
+        ]]></description>
+        <LookAt>
+            <longitude>39.470516</longitude>
+            <latitude>13.483882</latitude>
+            <altitude>2086.89</altitude>
+            <heading>359.99</heading>
+            <tilt>0</tilt>
+            <range>307.52</range>
+            <altitudeMode>absolute</altitudeMode>
+        </LookAt>
+        <styleUrl>#highlightStyle</styleUrl>
+        <Polygon>
+            <outerBoundaryIs>
+                <LinearRing>
+                    <coordinates>
+                        39.47012165458577,13.48397500225472,0
+                        39.47015706331938,13.48394828381921,0
+                        39.47022817761832,13.48406259555539,0
+                        39.47018148881412,13.4840885068294,0
+                        39.47012165458577,13.48397500225472,0
+                    </coordinates>
+                </LinearRing>
+            </outerBoundaryIs>
+        </Polygon>
+    </Placemark>
+
+    <Placemark id="atse_yohannes">
+        <name>Atse Yohannes School</name>
+        <description><![CDATA[
+            <h3>Atse Yohannes School</h3>
+            <p>A well-known school in Mekelle.</p>
+        ]]></description>
+        <LookAt>
+            <longitude>39.474698</longitude>
+            <latitude>13.488376</latitude>
+            <altitude>2082.74</altitude>
+        </LookAt>
+        <styleUrl>#highlightStyle</styleUrl>
+        <Polygon>
+            <outerBoundaryIs>
+                <LinearRing>
+                    <coordinates>
+                        39.473302,13.487984,0
+                        39.473744,13.487893,0
+                        39.474654,13.487627,0
+                        39.475490,13.487334,0
+                        39.476354,13.486895,0
+                        39.476201,13.487380,0
+                        39.476093,13.488137,0
+                        39.476017,13.489053,0
+                        39.475777,13.490007,0
+                        39.475029,13.490621,0
+                        39.474725,13.490277,0
+                        39.473867,13.489372,0
+                        39.472923,13.488231,0
+                        39.473302,13.487984,0
+                    </coordinates>
+                </LinearRing>
+            </outerBoundaryIs>
+        </Polygon>
+    </Placemark>
+
+    <Placemark id="stadium">
+        <name>Mekelle Stadium</name>
+        <description><![CDATA[
+            <h3>Mekelle Stadium</h3>
+            <p>The main sports venue in Mekelle, hosting football matches and events.</p>
+        ]]></description>
+        <Point>
+            <coordinates>39.477655,13.487692,2091.63</coordinates>
+        </Point>
+    </Placemark>
+
+    <Placemark id="church">
+        <name>Local Church</name>
+        <description><![CDATA[
+            <h3>Local Church</h3>
+            <p>A significant place of worship in Mekelle (Evangelical).</p>
+        ]]></description>
+        <Polygon>
+            <outerBoundaryIs>
+                <LinearRing>
+                    <coordinates>
+                        39.470860,13.508172,0
+                        39.471009,13.508103,0
+                        39.471444,13.507989,0
+                        39.471574,13.508458,0
+                        39.471060,13.508624,0
+                        39.470860,13.508172,0
+                    </coordinates>
+                </LinearRing>
+            </outerBoundaryIs>
+        </Polygon>
+    </Placemark>
+
+    <Placemark id="church_to_home">
+        <name>Church to Home Path</name>
+        <description><![CDATA[
+            <h3>Walking Path</h3>
+            <p>This is the route from the church to home.</p>
+        ]]></description>
+        <LineString>
+            <coordinates>
+                39.471489,13.507916,0
+                39.471152,13.507118,0
+                39.470263,13.507376,0
+                39.469941,13.506537,0
+                39.469184,13.506012,0
+                39.468644,13.504730,0
+                39.467504,13.501628,0
+                39.466467,13.498996,0
+                39.465642,13.496639,0
+                39.467817,13.495948,0
+                39.465458,13.489703,0
+                39.468294,13.488952,0
+                39.470210,13.487189,0
+                39.468892,13.486039,0
+                39.468600,13.484842,0
+                39.469010,13.484410,0
+                39.469341,13.484146,0
+                39.469432,13.483797,0
+                39.469917,13.482838,0
+                39.470093,13.482551,0
+                39.470180,13.483063,0
+                39.470318,13.483499,0
+                39.470484,13.483815,0
+            </coordinates>
+        </LineString>
+    </Placemark>
+
 </Document>
 </kml>
