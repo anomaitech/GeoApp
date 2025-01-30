@@ -22,7 +22,7 @@
     <Placemark id="mekelle">
         <name>Mekelle</name>
         <description><![CDATA[
-            <h3>Mekelle City</h3>
+
             <p>The capital of the Tigray region of Ethiopia, known for its rich history and vibrant culture.</p>
         ]]></description>
         <LookAt>
@@ -53,7 +53,7 @@
     <Placemark id="atse_yohannes">
         <name>Atse Yohannes School</name>
         <description><![CDATA[
-            <h3>Atse Yohannes School</h3>
+
             <p>A well-known school in Mekelle.</p>
         ]]></description>
         <LookAt>
@@ -89,7 +89,7 @@
     <Placemark id="stadium">
         <name>Mekelle Stadium</name>
         <description><![CDATA[
-            <h3>Mekelle Stadium</h3>
+
             <p>The main sports venue in Mekelle, hosting football matches and events.</p>
         ]]></description>
         <Point>
@@ -100,7 +100,7 @@
     <Placemark id="church">
         <name>Local Church</name>
         <description><![CDATA[
-            <h3>Local Church</h3>
+
             <p>A significant place of worship in Mekelle (Evangelical).</p>
         ]]></description>
         <Polygon>
@@ -122,7 +122,7 @@
     <Placemark id="church_to_home">
         <name>Church to Home Path</name>
         <description><![CDATA[
-            <h3>Walking Path</h3>
+
             <p>This is the route from the church to home.</p>
         ]]></description>
         <LineString>
