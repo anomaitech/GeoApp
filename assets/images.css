@@ -1,3 +1,6 @@
+/********************************************
+ * KEYFRAMES
+ ********************************************/
 @keyframes tonext {
   75% {
     left: 0;
@@ -43,86 +46,129 @@
   }
 }
 
+/********************************************
+ * RESETS & SCROLLBAR HIDING
+ ********************************************/
 * {
   box-sizing: border-box;
-  scrollbar-color: transparent transparent; /* thumb and track color */
+  /* Hide scrollbars in certain browsers */
+  scrollbar-color: transparent transparent;
   scrollbar-width: 0px;
+  -ms-overflow-style: none; /* IE/Edge scrollbar hide */
 }
 
 *::-webkit-scrollbar {
-  width: 0;
+  width: 0; /* Hide scrollbar (Chrome/Safari) */
 }
-
 *::-webkit-scrollbar-track {
   background: transparent;
 }
-
 *::-webkit-scrollbar-thumb {
   background: transparent;
   border: none;
 }
 
-* {
-  -ms-overflow-style: none;
-}
-
-ol, li {
+ol,
+li {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
+/********************************************
+ * CAROUSEL CONTAINER
+ ********************************************/
 .carousel {
   position: relative;
+
+  /* Creates an aspect ratio. 75% = 4:3
+     Example: if you want a 16:9 ratio, use padding-top: 56.25% */
   padding-top: 75%;
+
+  /* Subtle shadow */
   filter: drop-shadow(0 0 10px #0003);
+
+  /* Potential 3D effect (if you want to rotate slides in 3D) */
   perspective: 100px;
 }
 
+/********************************************
+ * VIEWPORT (SCROLL CONTAINER)
+ ********************************************/
 .carousel__viewport {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+
   display: flex;
+
+  /* Horizontal scrolling container */
   overflow-x: scroll;
-  counter-reset: item;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
+
+  /* We use counter-reset if we want to number the slides with CSS
+     (.carousel__slide:before { content: counter(item) }) */
+  counter-reset: item;
 }
 
+/********************************************
+ * SLIDES
+ ********************************************/
 .carousel__slide {
   position: relative;
   flex: 0 0 100%;
   width: 100%;
-  background-color: #f99;
+
+  /* This ensures each slide is "snapped" into view horizontally */
+  scroll-snap-align: center;
+
+  /* Demo colors (remove if using images) */
+  background-color: #f99; /* pinkish for odd slides */
   counter-increment: item;
 }
 
+/* Even slides use a different color for the demo */
 .carousel__slide:nth-child(even) {
-  background-color: #99f;
+  background-color: #99f; /* bluish */
 }
 
+/* Example numbering on each slide */
 .carousel__slide:before {
   content: counter(item);
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%,-40%,70px);
+  transform: translate3d(-50%, -40%, 70px);
   color: #fff;
   font-size: 2em;
 }
 
+/********************************************
+ * SNAPPER
+ ********************************************/
 .carousel__snapper {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+
+  /* Snap to center of each slide */
   scroll-snap-align: center;
 }
 
+/* On hover or focus, we stop the auto-play animation (below) */
+.carousel:hover .carousel__snapper,
+.carousel:focus-within .carousel__snapper {
+  animation-name: none;
+}
+
+/********************************************
+ * AUTO-PLAY ANIMATION
+ ********************************************/
 @media (hover: hover) {
   .carousel__snapper {
     animation-name: tonext, snap;
@@ -131,22 +177,24 @@ ol, li {
     animation-iteration-count: infinite;
   }
 
+  /* The last slide uses 'tostart' so it loops back to the first slide */
   .carousel__slide:last-child .carousel__snapper {
     animation-name: tostart, snap;
   }
 }
 
+/********************************************
+ * PREFER REDUCED MOTION
+ ********************************************/
 @media (prefers-reduced-motion: reduce) {
   .carousel__snapper {
     animation-name: none;
   }
 }
 
-.carousel:hover .carousel__snapper,
-.carousel:focus-within .carousel__snapper {
-  animation-name: none;
-}
-
+/********************************************
+ * NAVIGATION (DOTS, PREV/NEXT)
+ ********************************************/
 .carousel__navigation {
   position: absolute;
   right: 0;
@@ -169,16 +217,21 @@ ol, li {
   border: 0.25rem solid transparent;
   border-radius: 50%;
   font-size: 0;
+  margin: 0.25rem;
   transition: transform 0.1s;
+  cursor: pointer; /* if you want them clickable */
 }
 
+/********************************************
+ * PREV/NEXT ARROWS
+ ********************************************/
 .carousel::before,
 .carousel::after,
 .carousel__prev,
 .carousel__next {
   position: absolute;
   top: 0;
-  margin-top: 37.5%;
+  margin-top: 37.5%; /* half of 75% aspect ratio = center arrow vertically */
   width: 4rem;
   height: 4rem;
   transform: translateY(-50%);
@@ -206,16 +259,30 @@ ol, li {
   background-repeat: no-repeat;
   background-position: center center;
   color: #fff;
-  font-size: 2.5rem;
   line-height: 4rem;
   text-align: center;
   pointer-events: none;
 }
-
+.carousel__prev,
+.carousel__next {
+  z-index: 2; /* Ensure links are above images */
+  /* Existing styles... */
+}
+/* Left arrow */
 .carousel::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='0,50 80,100 80,0' fill='%23fff'/%3E%3C/svg%3E");
 }
 
+/* Right arrow */
 .carousel::after {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='100,50 20,100 20,0' fill='%23fff'/%3E%3C/svg%3E");
+}
+/********************************************
+ * ADD IMAGE STYLING
+ ********************************************/
+.carousel__snapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This ensures images cover the area without distortion */
+  display: block; /* Remove extra space under image */
 }

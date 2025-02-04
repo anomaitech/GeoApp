@@ -13,19 +13,13 @@
                 <href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
             </Icon>
         </IconStyle>
-
     </Style>
 
     <!-- Placemark: Addis Ababa (Ethiopia) -->
     <Placemark id="addisababa">
         <name>Addis Ababa</name>
         <description><![CDATA[
-
-
-
-
             <p><strong>Capital of Ethiopia</strong></p>
-
             <p>Addis Ababa is the capital city of Ethiopia, often referred to as the political capital of Africa due to its diplomatic significance. It is the headquarters of the African Union.</p>
             <p>
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Flag_of_Ethiopia.svg/800px-Flag_of_Ethiopia.svg.png"
@@ -34,7 +28,6 @@
             </p>
         ]]></description>
         <Point>
-            <!-- KML uses (longitude, latitude, altitude) -->
             <coordinates>38.7578,8.9806,0</coordinates>
         </Point>
     </Placemark>
@@ -90,6 +83,23 @@
         </Point>
     </Placemark>
 
+    <!-- Placemark: Lyon (France) -->
+    <Placemark id="france">
+        <name>Lyon</name>
+        <description><![CDATA[
+            <p><strong>City in France</strong></p>
+            <p>Lyon is located in east-central France and is the third-largest city in the country. Known for its rich history, gastronomy, and architecture, Lyon is a UNESCO World Heritage Site.</p>
+            <p>
+                <img src="https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg"
+                     alt="Flag of France"
+                     style="width:50px;" />
+            </p>
+        ]]></description>
+        <Point>
+            <!-- Coordinates: longitude, latitude, altitude -->
+            <coordinates>4.8357,45.7640,0</coordinates>
+        </Point>
+    </Placemark>
 
 </Document>
 </kml>
