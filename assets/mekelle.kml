@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<kml xmlns="http://www.opengis.net/kml/2.2"
+     xmlns:gx="http://www.google.com/kml/ext/2.2"
+     xmlns:kml="http://www.opengis.net/kml/2.2"
+     xmlns:atom="http://www.w3.org/2005/Atom">
 <Document>
-    <name>Mekelle Map</name>
+    <name>Map with Flags</name>
 
     <Style id="highlightStyle">
         <IconStyle>
@@ -10,149 +13,83 @@
                 <href>https://earth.google.com/earth/document/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
             </Icon>
         </IconStyle>
-        <LineStyle>
-            <color>ff2dc0fb</color>
-            <width>3</width>
-        </LineStyle>
-        <PolyStyle>
-            <color>40ffffff</color>
-        </PolyStyle>
+
     </Style>
 
-    <Placemark id="mekelle">
-        <name>Mekelle</name>
+    <!-- Placemark: Addis Ababa (Ethiopia) -->
+    <Placemark id="addisababa">
+        <name>Addis Ababa</name>
         <description><![CDATA[
 
-            <p>The capital of the Tigray region of Ethiopia, known for its rich history and vibrant culture.</p>
-        ]]></description>
-        <LookAt>
-            <longitude>39.470516</longitude>
-            <latitude>13.483882</latitude>
-            <altitude>2086.89</altitude>
-            <heading>359.99</heading>
-            <tilt>0</tilt>
-            <range>307.52</range>
-            <altitudeMode>absolute</altitudeMode>
-        </LookAt>
-        <styleUrl>#highlightStyle</styleUrl>
-        <Polygon>
-            <outerBoundaryIs>
-                <LinearRing>
-                    <coordinates>
-                        39.47012165458577,13.48397500225472,0
-                        39.47015706331938,13.48394828381921,0
-                        39.47022817761832,13.48406259555539,0
-                        39.47018148881412,13.4840885068294,0
-                        39.47012165458577,13.48397500225472,0
-                    </coordinates>
-                </LinearRing>
-            </outerBoundaryIs>
-        </Polygon>
-    </Placemark>
 
-    <Placemark id="atse_yohannes">
-        <name>Atse Yohannes School</name>
-        <description><![CDATA[
 
-            <p>A well-known school in Mekelle.</p>
-        ]]></description>
-        <LookAt>
-            <longitude>39.474698</longitude>
-            <latitude>13.488376</latitude>
-            <altitude>2082.74</altitude>
-        </LookAt>
-        <styleUrl>#highlightStyle</styleUrl>
-        <Polygon>
-            <outerBoundaryIs>
-                <LinearRing>
-                    <coordinates>
-                        39.473302,13.487984,0
-                        39.473744,13.487893,0
-                        39.474654,13.487627,0
-                        39.475490,13.487334,0
-                        39.476354,13.486895,0
-                        39.476201,13.487380,0
-                        39.476093,13.488137,0
-                        39.476017,13.489053,0
-                        39.475777,13.490007,0
-                        39.475029,13.490621,0
-                        39.474725,13.490277,0
-                        39.473867,13.489372,0
-                        39.472923,13.488231,0
-                        39.473302,13.487984,0
-                    </coordinates>
-                </LinearRing>
-            </outerBoundaryIs>
-        </Polygon>
-    </Placemark>
 
-    <Placemark id="stadium">
-        <name>Mekelle Stadium</name>
-        <description><![CDATA[
+            <p><strong>Capital of Ethiopia</strong></p>
 
-            <p>The main sports venue in Mekelle, hosting football matches and events.</p>
+            <p>Addis Ababa is the capital city of Ethiopia, often referred to as the political capital of Africa due to its diplomatic significance. It is the headquarters of the African Union.</p>
+            <p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Flag_of_Ethiopia.svg/800px-Flag_of_Ethiopia.svg.png"
+                     alt="Flag of Ethiopia"
+                     style="width:50px;" />
+            </p>
         ]]></description>
         <Point>
-            <coordinates>39.477655,13.487692,2091.63</coordinates>
+            <!-- KML uses (longitude, latitude, altitude) -->
+            <coordinates>38.7578,8.9806,0</coordinates>
         </Point>
     </Placemark>
 
-    <Placemark id="church">
-        <name>Local Church</name>
+    <!-- Placemark: Jerusalem (Israel) -->
+    <Placemark id="israel">
+        <name>Jerusalem</name>
         <description><![CDATA[
-
-            <p>A significant place of worship in Mekelle (Evangelical).</p>
+            <p><strong>City in Israel</strong></p>
+            <p>Jerusalem is one of the oldest cities in the world, held sacred by Judaism, Christianity, and Islam. It is a focal point of religious and historical significance.</p>
+            <p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Flag_of_Israel.svg/800px-Flag_of_Israel.svg.png"
+                     alt="Flag of Israel"
+                     style="width:50px;" />
+            </p>
         ]]></description>
-        <Polygon>
-            <outerBoundaryIs>
-                <LinearRing>
-                    <coordinates>
-                        39.470860,13.508172,0
-                        39.471009,13.508103,0
-                        39.471444,13.507989,0
-                        39.471574,13.508458,0
-                        39.471060,13.508624,0
-                        39.470860,13.508172,0
-                    </coordinates>
-                </LinearRing>
-            </outerBoundaryIs>
-        </Polygon>
+        <Point>
+            <coordinates>35.220480,31.778345,0</coordinates>
+        </Point>
     </Placemark>
 
-    <Placemark id="church_to_home">
-        <name>Church to Home Path</name>
+    <!-- Placemark: Delft (Netherlands) -->
+    <Placemark id="netherlands">
+        <name>Delft</name>
         <description><![CDATA[
-
-            <p>This is the route from the church to home.</p>
+            <p><strong>City in the Netherlands</strong></p>
+            <p>Delft is renowned for its historic canals, Delft Blue pottery, and its ties to the Dutch royal family. It is a vibrant university city near The Hague.</p>
+            <p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/800px-Flag_of_the_Netherlands.svg.png"
+                     alt="Flag of the Netherlands"
+                     style="width:50px;" />
+            </p>
         ]]></description>
-        <LineString>
-            <coordinates>
-                39.471489,13.507916,0
-                39.471152,13.507118,0
-                39.470263,13.507376,0
-                39.469941,13.506537,0
-                39.469184,13.506012,0
-                39.468644,13.504730,0
-                39.467504,13.501628,0
-                39.466467,13.498996,0
-                39.465642,13.496639,0
-                39.467817,13.495948,0
-                39.465458,13.489703,0
-                39.468294,13.488952,0
-                39.470210,13.487189,0
-                39.468892,13.486039,0
-                39.468600,13.484842,0
-                39.469010,13.484410,0
-                39.469341,13.484146,0
-                39.469432,13.483797,0
-                39.469917,13.482838,0
-                39.470093,13.482551,0
-                39.470180,13.483063,0
-                39.470318,13.483499,0
-                39.470484,13.483815,0
-            </coordinates>
-        </LineString>
+        <Point>
+            <coordinates>4.357067,52.011576,0</coordinates>
+        </Point>
     </Placemark>
+
+    <!-- Placemark: Nashville (USA) -->
+    <Placemark id="usa">
+        <name>Nashville</name>
+        <description><![CDATA[
+            <p><strong>Capital of Tennessee, USA</strong></p>
+            <p>Nashville is famous for its country music scene, earning it the nickname "Music City." It is also home to numerous universities and cultural institutions.</p>
+            <p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/800px-Flag_of_the_United_States.svg.png"
+                     alt="Flag of the USA"
+                     style="width:50px;" />
+            </p>
+        ]]></description>
+        <Point>
+            <coordinates>-86.5804,35.5175,0</coordinates>
+        </Point>
+    </Placemark>
+
 
 </Document>
 </kml>

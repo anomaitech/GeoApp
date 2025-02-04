@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit Converter App</title>
+
+  <!-- Leaflet CSS (if you want the map) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- Your main stylesheet(s) -->
+  <link rel="stylesheet" href="assets/main.css" />
+  <link rel="stylesheet" href="assets/images.css" />
+
+  <style>
+    /* Basic styling to ensure the tab content displays properly */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Carousel (from your CSS-only approach) */
+    .carousel {
+      position: relative;
+      padding-top: 75%;
+      filter: drop-shadow(0 0 10px #0003);
+      perspective: 100px;
+      overflow: hidden;
+    }
+    .carousel__viewport {
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      display: flex;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+    }
+    .carousel__slide {
+      position: relative;
+      flex: 0 0 100%;
+      width: 100%;
+      scroll-snap-align: center;
+    }
+    .carousel__snapper {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      /* A background or child <img> can go here */
+    }
+    .carousel__navigation {
+      position: absolute;
+      right: 0; bottom: 0; left: 0;
+      text-align: center;
+    }
+    .carousel__navigation-list,
+    .carousel__navigation-item {
+      display: inline-block;
+    }
+    .carousel__navigation-button {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      background-color: #333;
+      border-radius: 50%;
+      margin: 0.25rem;
+      text-indent: -9999px; /* hide text */
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="date"></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab(1)">Project 1</div>
+    <div class="tab" onclick="showTab(2)">Project 2</div>
+    <div class="tab" onclick="showTab(3)">Project 3</div>
+    <div class="tab" onclick="showTab(4)">Project 4</div>
+  </div>
+
+  <!-- ========================== Project 1 ========================== -->
+  <div class="tab-content active" id="project1">
+    <div class="container">
+      <div class="converter">
+        <h2>Convert Units</h2>
+        <label for="unit-type">Select Unit Type:</label>
+        <select id="unit-type" onchange="updateUnits()">
+          <option value="length">Length</option>
+          <option value="weight">Weight</option>
+          <option value="temperature">Temperature</option>
+        </select>
+
+        <label for="input-value">Enter Value:</label>
+        <input type="number" id="input-value" placeholder="Enter value"/>
+
+        <label for="from-unit">From:</label>
+        <select id="from-unit"></select>
+
+        <label for="to-unit">To:</label>
+        <select id="to-unit"></select>
+
+        <button onclick="convertUnits()">Convert</button>
+
+        <h3>Result: <span id="result"></span></h3>
+        <h4>Current Time: <span id="dateNow">-</span></h4>
+      </div>
+
+      <div class="history">
+        <h2>Conversion History</h2>
+        <ul id="history-list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================== Project 2 ========================== -->
+  <div class="tab-content" id="project2">
+    <h2>Part 1</h2>
+    <p>
+      This map is zoomed to my hometown (Mekelle, Ethiopia) with markers for my house, school, and church.
+      It also includes a polygon for my property boundary and a circle for a ~10-minute walk radius.
+    </p>
+    <div id="map2" style="width: 100%; height: 500px; margin-bottom: 1rem;"></div>
+
+    <h2>Part 2</h2>
+    <p>
+      Enter two locations below (lat,lng) to place markers and draw a great-circle line between them.
+      The distance is computed using the simplified Haversine formula.
+    </p>
+    <div style="margin-bottom: 1rem;">
+      <label for="location1">Location 1 (lat,lng):</label>
+      <input type="text" id="location1" placeholder="13.479694, 39.467275" style="width: 200px;"/>
+    </div>
+    <div style="margin-bottom: 1rem;">
+      <label for="location2">Location 2 (lat,lng):</label>
+      <input type="text" id="location2" placeholder="13.489424, 39.474480" style="width: 200px;"/>
+    </div>
+    <button onclick="drawLocationsAndLine()">Draw &amp; Compute Distance</button>
+    <div>
+      <h3>Distance: <span id="distanceResult"></span></h3>
+    </div>
+  </div>
+
+  <!-- ========================== Project 3 ========================== -->
+  <div class="tab-content" id="project3"
+       style="display: grid; grid-template-columns: 25% 75%; gap: 1rem;">
+
+    <!-- Left Column: Buttons (25% width) -->
+    <div style="background-color: #f8f8f8; padding: 1rem;">
+      <h2>KML Map Display</h2>
+      <p>This map loads a KML file and displays its contents using Leaflet.</p>
+
+      <!-- Country Buttons -->
+      <button onclick="goToPlace('addis_ababa')" style="display:block; margin-bottom:1rem;">
+        Ethiopia
+      </button>
+      <button onclick="goToPlace('jerusalem')" style="display:block; margin-bottom:1rem;">
+        Israel
+      </button>
+      <button onclick="goToPlace('delft')" style="display:block; margin-bottom:1rem;">
+        Netherlands
+      </button>
+      <button onclick="goToPlace('tennessee')" style="display:block; margin-bottom:1rem;">
+        USA
+      </button>
+
+      <!-- Your CSS-Only Carousel Markup -->
+      <div id="image">
+        <section class="carousel" aria-label="Gallery">
+          <ol class="carousel__viewport">
+            <!-- Slide 1 -->
+            <li id="carousel__slide1"
+                tabindex="0"
+                class="carousel__slide">
+              <div class="carousel__snapper">
+                <a href="#carousel__slide4" class="carousel__prev">Go to last slide</a>
+                <a href="#carousel__slide2" class="carousel__next">Go to next slide</a>
+              </div>
+            </li>
+            <!-- Slide 2 -->
+            <li id="carousel__slide2"
+                tabindex="0"
+                class="carousel__slide">
+              <div class="carousel__snapper">
+                <a href="#carousel__slide1" class="carousel__prev">Go to previous slide</a>
+                <a href="#carousel__slide3" class="carousel__next">Go to next slide</a>
+              </div>
+            </li>
+            <!-- Slide 3 -->
+            <li id="carousel__slide3"
+                tabindex="0"
+                class="carousel__slide">
+              <div class="carousel__snapper">
+                <a href="#carousel__slide2" class="carousel__prev">Go to previous slide</a>
+                <a href="#carousel__slide4" class="carousel__next">Go to next slide</a>
+              </div>
+            </li>
+            <!-- Slide 4 -->
+            <li id="carousel__slide4"
+                tabindex="0"
+                class="carousel__slide">
+              <div class="carousel__snapper">
+                <a href="#carousel__slide3" class="carousel__prev">Go to previous slide</a>
+                <a href="#carousel__slide1" class="carousel__next">Go to first slide</a>
+              </div>
+            </li>
+          </ol>
+
+          <aside class="carousel__navigation">
+            <ol class="carousel__navigation-list">
+              <li class="carousel__navigation-item">
+                <a href="#carousel__slide1" class="carousel__navigation-button">Go to slide 1</a>
+              </li>
+              <li class="carousel__navigation-item">
+                <a href="#carousel__slide2" class="carousel__navigation-button">Go to slide 2</a>
+              </li>
+              <li class="carousel__navigation-item">
+                <a href="#carousel__slide3" class="carousel__navigation-button">Go to slide 3</a>
+              </li>
+              <li class="carousel__navigation-item">
+                <a href="#carousel__slide4" class="carousel__navigation-button">Go to slide 4</a>
+              </li>
+            </ol>
+          </aside>
+        </section>
+      </div>
+    </div>
+
+    <!-- Right Column: (75% width) - your placeholder image & map -->
+    <div style="padding: 1rem; border: 1px solid #ccc;">
+      <img
+        src="https://via.placeholder.com/500"
+        alt="Country or city image"
+        style="width: 100%; height: auto;"
+      />
+      <div
+        id="map3"
+        style="width: 100%; height: 500px; margin-top: 1rem; background: #eaeaea;"
+      >
+        <!-- Leaflet map would go here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================== Project 4 ========================== -->
+  <div class="tab-content" id="project4">
+      <h2>Project 4 Content</h2>
+      <p>This is where Project 4 content would go.</p>
+  </div>
+
+  <!-- ========================== Personal Info / Links ========================== -->
+  <section class="about-me">
+      <h2>Personal Information</h2>
+      <p><strong>Name:</strong> Henok Kiflom Teklu</p>
+      <p><strong>Info:</strong> PhD Student, Happily married, 2 beautiful kids</p>
+      <p><strong>Class Semester:</strong> Winter 2025</p>
+      <p><strong>Class Name:</strong> CI511-Geospatial Software Development</p>
+      <p><strong>Role:</strong> PhD Student</p>
+  </section>
+
+  <section class="about-me">
+      <h2>My Picture</h2>
+      <img src="henok.jpeg" alt="My Picture">
+  </section>
+
+  <section class="about-me">
+      <h2>Things I'm Interested In</h2>
+      <div class="interests">
+          <img src="ai.jpeg" alt="Artificial Intelligence">
+          <img src="hydroinformatics.jpg" alt="Hydroinformatics">
+          <img src="nature.jpg" alt="Nature">
+      </div>
+  </section>
+
+  <section class="about-me">
+      <h2>Links I Like</h2>
+      <div class="links">
+          <a href="https://www.byu.edu" target="_blank">Brigham Young University</a>
+          <a href="https://www.instagram.com" target="_blank">Instagram</a>
+          <a href="https://www.github.com" target="_blank">GitHub</a>
+      </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Henok Kiflom Teklu</p>
+    <p>BYU Location:</p>
+    <div id="map"></div>
+  </footer>
+
+  <!-- ========================== Leaflet Scripts (if you use a Leaflet map) ========================== -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-kml@latest/dist/leaflet-kml.js"></script>
+  <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+
+  <!-- Your existing scripts -->
+  <script src="assets/main.js"></script>
+  <script src="assets/project2.js"></script>
+  <!--
+    Instead of a separate file, we'll inline the "project3.js" logic here
+    for demonstration.
+  -->
+  <script>
+    // (Optional) If you have a showTab() function for the tab system:
+    function showTab(tabNumber) {
+      const allTabs = document.querySelectorAll('.tab-content');
+      allTabs.forEach((tab, index) => {
+        tab.classList.remove('active');
+        if (index === (tabNumber - 1)) {
+          tab.classList.add('active');
+        }
+      });
+
+      const allTabButtons = document.querySelectorAll('.tab');
+      allTabButtons.forEach((btn, i) => {
+        btn.classList.remove('active');
+        if (i === (tabNumber - 1)) {
+          btn.classList.add('active');
+        }
+      });
+    }
+
+    // 1) Define images for each country
+    const countryImages = {
+      addis_ababa: [
+        "https://images.unsplash.com/photo-1611095973513-cd10fef09e41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1555929136-804d31f42f28?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1532515619921-37a5f7d22d2c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1594540708432-24ac8894fa74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800"
+      ],
+      jerusalem: [
+        "https://images.unsplash.com/photo-1590414286514-443b5bb1cbe0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1630247765474-2260db422061?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1630529928207-514e5bf98562?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1636589330925-d04150543142?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800"
+      ],
+      delft: [
+        "https://images.unsplash.com/photo-1600954389543-66c996a2abc9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1620643020143-aba8bf709732?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1584184056269-b35af839dba4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1616453715081-48db37cd2312?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800"
+      ],
+      tennessee: [
+        "https://images.unsplash.com/photo-1601889761626-a3d56b2c7d23?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1531606482087-e1619236b136?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1571569335139-cf3111752f1f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+        "https://images.unsplash.com/photo-1588795947937-d465117cde01?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800"
+      ]
+    };
+
+    // 2) Called by the country buttons
+    function goToPlace(placeId) {
+      // Optional: If you have a Leaflet map, setView here
+      // if (placeId === 'addis_ababa') { map.setView([8.9806, 38.7578], 9); }
+
+      updateCarousel(placeId);
+    }
+
+    // 3) Dynamically load images into each of the 4 slides
+    function updateCarousel(placeId) {
+      const images = countryImages[placeId];
+      if (!images) {
+        console.warn("No images found for place:", placeId);
+        return;
+      }
+
+      // Slide 1
+      const slide1Snapper = document.querySelector("#carousel__slide1 .carousel__snapper");
+      const nav1 = slide1Snapper.querySelectorAll("a"); // preserve existing anchors
+      slide1Snapper.innerHTML = `<img src="${images[0]}" alt="Slide 1" />`;
+      nav1.forEach(a => slide1Snapper.appendChild(a));
+
+      // Slide 2
+      const slide2Snapper = document.querySelector("#carousel__slide2 .carousel__snapper");
+      const nav2 = slide2Snapper.querySelectorAll("a");
+      slide2Snapper.innerHTML = `<img src="${images[1]}" alt="Slide 2" />`;
+      nav2.forEach(a => slide2Snapper.appendChild(a));
+
+      // Slide 3
+      const slide3Snapper = document.querySelector("#carousel__slide3 .carousel__snapper");
+      const nav3 = slide3Snapper.querySelectorAll("a");
+      slide3Snapper.innerHTML = `<img src="${images[2]}" alt="Slide 3" />`;
+      nav3.forEach(a => slide3Snapper.appendChild(a));
+
+      // Slide 4
+      const slide4Snapper = document.querySelector("#carousel__slide4 .carousel__snapper");
+      const nav4 = slide4Snapper.querySelectorAll("a");
+      slide4Snapper.innerHTML = `<img src="${images[3]}" alt="Slide 4" />`;
+      nav4.forEach(a => slide4Snapper.appendChild(a));
+
+      console.log(`Updated carousel for: ${placeId}`);
+    }
+
+    // 4) If you want to set a default country on page load:
+    // document.addEventListener('DOMContentLoaded', () => {
+    //   goToPlace('addis_ababa');
+    // });
+  </script>
+</body>
+</html>
