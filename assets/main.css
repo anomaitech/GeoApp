@@ -238,3 +238,18 @@ h3 {
   height: 500px;
   margin-bottom: 1rem;
 }
+#map4 {
+  width: 500px;
+  height: 500px;
+  margin-bottom: 1rem;
+}
+#project3.active {
+  display: grid;
+  grid-template-columns: 25% 75%;
+  gap: 1rem;
+}
+#project4.active {
+  display: grid;
+  grid-template-columns: 25% 75%;
+  gap: 1rem;
+}

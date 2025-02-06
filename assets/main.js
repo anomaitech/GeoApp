@@ -3,17 +3,25 @@
 /************************************************************/
 function showTab(tabNum) {
   // remove 'active' class from all .tab and .tab-content
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+const allTabs = document.querySelectorAll('.tab');
+const allContents = document.querySelectorAll('.tab-content');
 
-  // add 'active' to chosen ones
-  document.querySelector('.tab:nth-child(' + tabNum + ')').classList.add('active');
-  document.getElementById('project' + tabNum).classList.add('active');
+allTabs.forEach(t => t.classList.remove('active'));
+allContents.forEach(c => c.classList.remove('active'));
+
+// Because tabNum is 1-based (1,2,3,4...), we do:
+allTabs[tabNum - 1].classList.add('active');
+allContents[tabNum - 1].classList.add('active');
 
   // if we just activated Project 2 tab, ensure the map is resized properly
   if (tabNum === 2 && typeof map2 !== 'undefined') {
     setTimeout(() => {
       map2.invalidateSize();
+    }, 50);
+  }
+ if (tabNum === 4 && typeof map2 !== 'undefined') {
+    setTimeout(() => {
+      map4.invalidateSize();
     }, 50);
   }
 }

@@ -1,156 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit Converter App</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <link rel="stylesheet" href="assets/main.css"/>
-    <link rel="stylesheet" href="assets/images.css"/>
-    <style>
-      /* Basic styling to ensure the tab content displays properly */
-      .tab-content { display: none; }
-      .tab-content.active { display: block; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit Converter App</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <link rel="stylesheet" href="assets/main.css" />
+  <link rel="stylesheet" href="assets/images.css" />
+  <style>
+    /* Basic styling to ensure the tab content displays properly */
+    .tab-content {
+      display: none;
+    }
 
-      /* You can also override or add custom styling in assets/main.css */
-    </style>
+    .tab-content.active {
+      display: block;
+    }
+
+    /* You can also override or add custom styling in assets/main.css */
+  </style>
 </head>
+
 <body>
+  <div id="date"></div>
 
-<div id="date"></div>
-
-<div class="tabs">
+  <div class="tabs">
     <div class="tab active" onclick="showTab(1)">Project 1</div>
     <div class="tab" onclick="showTab(2)">Project 2</div>
     <div class="tab" onclick="showTab(3)">Project 3</div>
     <div class="tab" onclick="showTab(4)">Project 4</div>
-</div>
+  </div>
 
-<!-- ========================== Project 1 ========================== -->
-<div class="tab-content active" id="project1">
+  <!-- ========================== Project 1 ========================== -->
+  <div class="tab-content active" id="project1">
     <div class="container">
-        <div class="converter">
-            <h2>Convert Units</h2>
-            <label for="unit-type">Select Unit Type:</label>
-            <select id="unit-type" onchange="updateUnits()">
-                <option value="length">Length</option>
-                <option value="weight">Weight</option>
-                <option value="temperature">Temperature</option>
-            </select>
+      <div class="converter">
+        <h2>Convert Units</h2>
+        <label for="unit-type">Select Unit Type:</label>
+        <select id="unit-type" onchange="updateUnits()">
+          <option value="length">Length</option>
+          <option value="weight">Weight</option>
+          <option value="temperature">Temperature</option>
+        </select>
 
-            <label for="input-value">Enter Value:</label>
-            <input type="number" id="input-value" placeholder="Enter value">
+        <label for="input-value">Enter Value:</label>
+        <input type="number" id="input-value" placeholder="Enter value" />
 
-            <label for="from-unit">From:</label>
-            <select id="from-unit"></select>
+        <label for="from-unit">From:</label>
+        <select id="from-unit"></select>
 
-            <label for="to-unit">To:</label>
-            <select id="to-unit"></select>
+        <label for="to-unit">To:</label>
+        <select id="to-unit"></select>
 
-            <button onclick="convertUnits()">Convert</button>
+        <button onclick="convertUnits()">Convert</button>
 
-            <h3>Result: <span id="result"></span></h3>
+        <h3>
+          Result:
+          <span id="result"></span>
+        </h3>
 
-            <h4>Current Time: <span id="dateNow">-</span></h4>
-        </div>
+        <h4>
+          Current Time:
+          <span id="dateNow">-</span>
+        </h4>
+      </div>
 
-        <div class="history">
-            <h2>Conversion History</h2>
-            <ul id="history-list"></ul>
-        </div>
+      <div class="history">
+        <h2>Conversion History</h2>
+        <ul id="history-list"></ul>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- ========================== Project 2 ========================== -->
-<div class="tab-content" id="project2">
+  <!-- ========================== Project 2 ========================== -->
+  <div class="tab-content" id="project2">
     <h2>Part 1</h2>
     <p>
-      This map is zoomed to my hometown (Mekelle, Ethiopia) with markers for my house, school, and church.
-      It also includes a polygon for my property boundary and a circle for a ~10-minute walk radius.
+      This map is zoomed to my hometown (Mekelle, Ethiopia) with markers for my
+      house, school, and church. It also includes a polygon for my property
+      boundary and a circle for a ~10-minute walk radius.
     </p>
     <div id="map2" style="width: 100%; height: 500px; margin-bottom: 1rem;"></div>
 
     <h2>Part 2</h2>
     <p>
-      Enter two locations below (lat,lng) to place markers and draw a great-circle line between them.
-      The distance is computed using the simplified Haversine formula.
+      Enter two locations below (lat,lng) to place markers and draw a
+      great-circle line between them. The distance is computed using the
+      simplified Haversine formula.
     </p>
     <div style="margin-bottom: 1rem;">
       <label for="location1">Location 1 (lat,lng):</label>
-      <input type="text" id="location1" placeholder="13.479694, 39.467275" style="width: 200px;">
+      <input
+        type="text"
+        id="location1"
+        placeholder="13.479694, 39.467275"
+        style="width: 200px;"
+      />
     </div>
     <div style="margin-bottom: 1rem;">
       <label for="location2">Location 2 (lat,lng):</label>
-      <input type="text" id="location2" placeholder="13.489424, 39.474480" style="width: 200px;">
+      <input
+        type="text"
+        id="location2"
+        placeholder="13.489424, 39.474480"
+        style="width: 200px;"
+      />
     </div>
     <button onclick="drawLocationsAndLine()">Draw & Compute Distance</button>
+
     <div>
-      <h3>Distance: <span id="distanceResult"></span></h3>
+      <h3>
+        Distance:
+        <span id="distanceResult"></span>
+      </h3>
     </div>
-</div>
+  </div>
 
-<!-- ========================== Project 3 ========================== -->
-<!-- ========================== Project 3 ========================== -->
-<div class="tab-content" id="project3"
-     style="display: grid; grid-template-columns: 25% 75%; gap: 1rem;">
+  <!-- ========================== Project 3 ========================== -->
+  <div
+    class="tab-content"
+    id="project3"
 
-  <!-- Left Column: Buttons (25% width) -->
-  <div style="background-color: #f8f8f8; padding: 1rem;">
-    <h2>KML Map Display</h2>
-    <p>This map loads a KML file and displays the places I have visited using Leaflet, some of which I lived in for longer periods</p>
+  >
+    <!-- Left Column: Buttons (25% width) -->
+    <div style="background-color: #f8f8f8; padding: 1rem;">
+      <h2>KML Map Display</h2>
+      <p>
+        This map loads a KML file and displays the places I have visited using
+        Leaflet, some of which I lived in for longer periods
+      </p>
 
-    <button onclick="goToPlace('addis_ababa')" style="display:block; margin-bottom:1rem;">
-      Ethiopia
-    </button>
-    <button onclick="goToPlace('jerusalem')" style="display:block; margin-bottom:1rem;">
-      Israel
-    </button>
-    <button onclick="goToPlace('delft')" style="display:block; margin-bottom:1rem;">
-      Netherlands
-    </button>
-      <button onclick="goToPlace('lyon')" style="display:block; margin-bottom:1rem;">
-      France
-    </button>
-    <button onclick="goToPlace('tennessee')" style="display:block; margin-bottom:1rem;">
-      USA
-    </button>
+      <button
+        onclick="goToPlace('addis_ababa')"
+        style="display: block; margin-bottom: 1rem;"
+      >
+        Ethiopia
+      </button>
+      <button
+        onclick="goToPlace('jerusalem')"
+        style="display: block; margin-bottom: 1rem;"
+      >
+        Israel
+      </button>
+      <button
+        onclick="goToPlace('delft')"
+        style="display: block; margin-bottom: 1rem;"
+      >
+        Netherlands
+      </button>
+      <button
+        onclick="goToPlace('lyon')"
+        style="display: block; margin-bottom: 1rem;"
+      >
+        France
+      </button>
+      <button
+        onclick="goToPlace('tennessee')"
+        style="display: block; margin-bottom: 1rem;"
+      >
+        USA
+      </button>
+
       <div id="image">
         <section class="carousel" aria-label="Gallery">
           <ol class="carousel__viewport">
             <!-- Slide 1 -->
-            <li id="carousel__slide1"
-                tabindex="0"
-                class="carousel__slide">
+            <li
+              id="carousel__slide1"
+              tabindex="0"
+              class="carousel__slide"
+            >
               <div class="carousel__snapper">
-                <a href="#carousel__slide4" class="carousel__prev">Go to last slide</a>
-                <a href="#carousel__slide2" class="carousel__next">Go to next slide</a>
+                <a href="#carousel__slide4" class="carousel__prev"
+                  >Go to last slide</a
+                >
+                <a href="#carousel__slide2" class="carousel__next"
+                  >Go to next slide</a
+                >
               </div>
             </li>
+
             <!-- Slide 2 -->
-            <li id="carousel__slide2"
-                tabindex="0"
-                class="carousel__slide">
+            <li
+              id="carousel__slide2"
+              tabindex="0"
+              class="carousel__slide"
+            >
               <div class="carousel__snapper">
-                <a href="#carousel__slide1" class="carousel__prev">Go to previous slide</a>
-                <a href="#carousel__slide3" class="carousel__next">Go to next slide</a>
+                <a href="#carousel__slide1" class="carousel__prev"
+                  >Go to previous slide</a
+                >
+                <a href="#carousel__slide3" class="carousel__next"
+                  >Go to next slide</a
+                >
               </div>
             </li>
+
             <!-- Slide 3 -->
-            <li id="carousel__slide3"
-                tabindex="0"
-                class="carousel__slide">
+            <li
+              id="carousel__slide3"
+              tabindex="0"
+              class="carousel__slide"
+            >
               <div class="carousel__snapper">
-                <a href="#carousel__slide2" class="carousel__prev">Go to previous slide</a>
-                <a href="#carousel__slide4" class="carousel__next">Go to next slide</a>
+                <a href="#carousel__slide2" class="carousel__prev"
+                  >Go to previous slide</a
+                >
+                <a href="#carousel__slide4" class="carousel__next"
+                  >Go to next slide</a
+                >
               </div>
             </li>
+
             <!-- Slide 4 -->
-            <li id="carousel__slide4"
-                tabindex="0"
-                class="carousel__slide">
+            <li
+              id="carousel__slide4"
+              tabindex="0"
+              class="carousel__slide"
+            >
               <div class="carousel__snapper">
-                <a href="#carousel__slide3" class="carousel__prev">Go to previous slide</a>
-                <a href="#carousel__slide1" class="carousel__next">Go to first slide</a>
+                <a href="#carousel__slide3" class="carousel__prev"
+                  >Go to previous slide</a
+                >
+                <a href="#carousel__slide1" class="carousel__next"
+                  >Go to first slide</a
+                >
               </div>
             </li>
           </ol>
@@ -158,16 +235,32 @@
           <aside class="carousel__navigation">
             <ol class="carousel__navigation-list">
               <li class="carousel__navigation-item">
-                <a href="#carousel__slide1" class="carousel__navigation-button">Go to slide 1</a>
+                <a
+                  href="#carousel__slide1"
+                  class="carousel__navigation-button"
+                  >Go to slide 1</a
+                >
               </li>
               <li class="carousel__navigation-item">
-                <a href="#carousel__slide2" class="carousel__navigation-button">Go to slide 2</a>
+                <a
+                  href="#carousel__slide2"
+                  class="carousel__navigation-button"
+                  >Go to slide 2</a
+                >
               </li>
               <li class="carousel__navigation-item">
-                <a href="#carousel__slide3" class="carousel__navigation-button">Go to slide 3</a>
+                <a
+                  href="#carousel__slide3"
+                  class="carousel__navigation-button"
+                  >Go to slide 3</a
+                >
               </li>
               <li class="carousel__navigation-item">
-                <a href="#carousel__slide4" class="carousel__navigation-button">Go to slide 4</a>
+                <a
+                  href="#carousel__slide4"
+                  class="carousel__navigation-button"
+                  >Go to slide 4</a
+                >
               </li>
             </ol>
           </aside>
@@ -175,78 +268,125 @@
       </div>
     </div>
 
-  <!-- Right Column: Image (75% width) -->
-  <div style="padding: 1rem; border: 1px solid #ccc;">
-    <!-- Image Placeholder -->
-    <img src="https://via.placeholder.com/500"
-         alt="Country or city image"
-         style="width: 100%; height: auto;" />
-
-    <!-- Or you can include more content, e.g. your map or another placeholder -->
-    <div id="map3" style="width: 100%; height: 500px; margin-top: 1rem; background: #eaeaea;">
-      <!-- Leaflet map would go here -->
+    <!-- Right Column: Image (75% width) -->
+    <div style="padding: 1rem; border: 1px solid #ccc;">
+      <!-- Or include more content/map placeholder here -->
+      <div
+        id="map3"
+        style="width: 100%; height: 500px; margin-top: 1rem; background: #eaeaea;"
+      >
+        <!-- Leaflet map would go here -->
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- ========================== Project 4 ========================== -->
+  <div
+    class="tab-content"
+    id="project4"
+
+  >
+    <!-- Left Column: Buttons (25% width) -->
+    <div style="background-color: #f8f8f8; padding: 1rem;">
+      <h2>KML Map Display</h2>
+      <p>
+        This code dynamically loads a KML file based on user selection, displays aquifer data using Leaflet, fetches and filters CSV data by the clicked Well_ID, and generates a Plotly line chart (WTE vs. Date) with real-time updates for different wells.
+      </p>
+
+      <button
+        onclick="goToState('UT')"
+        style="display: block; margin-bottom: 1rem;"
+      >
+        UTAH
+      </button>
+      <button
+        onclick="goToState('NV')"
+        style="display: block; margin-bottom: 1rem;"
+      >
+        NEVADA
+      </button>
+      <button
+        onclick="goToState('WY')"
+        style="display: block; margin-bottom: 1rem;"
+      >
+        WYOMING
+      </button>
+      <button
+        onclick="goToState('ID')"
+        style="display: block; margin-bottom: 1rem;"
+      >
+        IDAHO
+      </button>
 
 
 
-<!-- ========================== Project 4 ========================== -->
-<div class="tab-content" id="project4">
-    <h2>Project 4 Content</h2>
-    <p>This is where Project 4 content would go.</p>
-</div>
+    </div>
 
-<!-- ========================== Personal Info / Links ========================== -->
-<section class="about-me">
+    <!-- Right Column: Image (75% width) -->
+    <div style="padding: 1rem; border: 1px solid #ccc;">
+      <!-- Or include more content/map placeholder here -->
+      <div
+        id="map4"
+        style="width: 100%; height: 500px; margin-top: 1rem; background: #eaeaea;"
+      >
+        <!-- Leaflet map would go here -->
+      </div>
+    </div>
+  </div>
+<!-- Modal for Plotly Graph -->
+<div id="plotContainer" style="width: 100%; height: 400px; border: 1px solid #ccc;"></div>
+
+
+
+
+  <!-- ========================== Personal Info / Links ========================== -->
+  <section class="about-me">
     <h2>Personal Information</h2>
     <p><strong>Name:</strong> Henok Kiflom Teklu</p>
     <p><strong>Info:</strong> PhD Student, Happily married, 2 beautiful kids</p>
     <p><strong>Class Semester:</strong> Winter 2025</p>
     <p><strong>Class Name:</strong> CI511-Geospatial Software Development</p>
     <p><strong>Role:</strong> PhD Student</p>
-</section>
+  </section>
 
-<section class="about-me">
+  <section class="about-me">
     <h2>My Picture</h2>
-    <img src="henok.jpeg" alt="My Picture">
-</section>
+    <img src="henok.jpeg" alt="My Picture" />
+  </section>
 
-<section class="about-me">
+  <section class="about-me">
     <h2>Things I'm Interested In</h2>
     <div class="interests">
-        <img src="ai.jpeg" alt="Artificial Intelligence">
-        <img src="hydroinformatics.jpg" alt="Hydroinformatics">
-        <img src="nature.jpg" alt="Nature">
+      <img src="ai.jpeg" alt="Artificial Intelligence" />
+      <img src="hydroinformatics.jpg" alt="Hydroinformatics" />
+      <img src="nature.jpg" alt="Nature" />
     </div>
-</section>
+  </section>
 
-<section class="about-me">
+  <section class="about-me">
     <h2>Links I Like</h2>
     <div class="links">
-        <a href="https://www.byu.edu" target="_blank">Brigham Young University</a>
-        <a href="https://www.instagram.com" target="_blank">Instagram</a>
-        <a href="https://www.github.com" target="_blank">GitHub</a>
+      <a href="https://www.byu.edu" target="_blank">Brigham Young University</a>
+      <a href="https://www.instagram.com" target="_blank">Instagram</a>
+      <a href="https://www.github.com" target="_blank">GitHub</a>
     </div>
-</section>
+  </section>
 
-<footer>
+  <footer>
     <p>&copy; 2025 Henok Kiflom Teklu</p>
     <p>BYU Location:</p>
     <div id="map"></div>
-</footer>
+  </footer>
 
-<!-- ========================== Leaflet Scripts ========================== -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-kml@latest/dist/leaflet-kml.js"></script>
-<script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+  <!-- ========================== Leaflet Scripts ========================== -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-kml@latest/dist/leaflet-kml.js"></script>
+  <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-<script src="assets/main.js"></script>
-<script src="assets/project2.js"></script>
-<script src="assets/project3.js"></script>
-
-
-
-
+  <script src="assets/main.js"></script>
+  <script src="assets/project2.js"></script>
+  <script src="assets/project3.js"></script>
+    <script src="assets/project4.js"></script>
 </body>
 </html>
