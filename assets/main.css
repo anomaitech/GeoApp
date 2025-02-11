@@ -253,3 +253,14 @@ h3 {
   grid-template-columns: 25% 75%;
   gap: 1rem;
 }
+input, select {
+    padding: 8px;
+    margin-right: 10px;
+    width: 200px; /* Adjusted width for better layout */
+}
+
+
+#chartContainer { max-width: 400px; margin: 20px 0; }
+table { border-collapse: collapse; margin: 20px 0; width: 100%; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background: #007bff; color: white; }

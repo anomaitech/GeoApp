@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Water Model Forecast Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        section { margin: 30px 0; padding: 20px; background: #f5f5f5; border-radius: 8px; }
+        .input-group { margin: 15px 0; }
+        input, select { padding: 8px; margin-right: 10px; }
+        button { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #chartContainer { max-width: 800px; margin: 20px 0; }
+        table { border-collapse: collapse; margin: 20px 0; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <h1>National Water Model Forecast Viewer</h1>
+
+    <section id="forecast">
+        <h2>Get Forecast</h2>
+        <div class="input-group">
+            <input type="text" id="reachId" placeholder="Enter Reach ID (e.g., 23021904)">
+            <select id="forecastType">
+                <option value="short_range">Short Range Forecast</option>
+                <option value="long_range">Long Range Forecast</option>
+            </select>
+            <button onclick="getForecast()">Get Forecast</button>
+        </div>
+        <div id="reachInfo"></div>
+        <div id="results">
+            <canvas id="forecastChart"></canvas>
+            <table id="forecastTable"></table>
+        </div>
+    </section>
+
+    <section id="learn-more">
+        <h2>Learn More About the NWM</h2>
+        <ul>
+            <li><a href="https://water.noaa.gov/about/nwm" target="_blank">NWM Official Site</a></li>
+            <li><a href="https://www.sciencedirect.com/science/article/pii/S1364815224001841" target="_blank">NWM Scientific Paper</a></li>
+            <li><a href="https://onlinelibrary.wiley.com/doi/full/10.1111/1752-1688.13184" target="_blank">NWM Technical Details</a></li>
+        </ul>
+    </section>
+
+    <section id="how-it-works">
+        <h2>How Does It Work?</h2>
+        <p>1. **User Input**: Users enter a **Reach ID** and select a **forecast type** (Short Range or Long Range).</p>
+        <p>2. **API Request**: The app makes an HTTP request to NOAA’s API (<code>https://api.water.noaa.gov/nwps/v1/reaches/{reachId}</code>).</p>
+        <p>3. **Data Processing**: The API returns JSON data with reach details and available streamflow forecasts.</p>
+        <p>4. **Display Results**:</p>
+        <ul>
+            <li>**Metadata**: Reach Name, Coordinates, Forecast Types, Upstream & Downstream Reaches.</li>
+            <li>**Chart**: Displays streamflow predictions over time.</li>
+            <li>**Table**: Shows exact forecast values for different timestamps.</li>
+        </ul>
+    </section>
+
+    <script>
+        let myChart = null;
+
+        async function getForecast() {
+            const reachId = document.getElementById('reachId').value.trim();
+            const forecastType = document.getElementById('forecastType').value;
+
+            if (!reachId) {
+                alert('Please enter a reach ID');
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://api.water.noaa.gov/nwps/v1/reaches/${reachId}`);
+                if (!response.ok) throw new Error("Error fetching data");
+
+                const data = await response.json();
+                displayReachInfo(data, forecastType);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error fetching forecast data');
+            }
+        }
+
+        function displayReachInfo(data, forecastType) {
+            const infoDiv = document.getElementById('reachInfo');
+            infoDiv.innerHTML = `
+                <h3>Reach Information</h3>
+                <p><strong>Name:</strong> ${data.name}</p>
+                <p><strong>Coordinates:</strong> ${data.latitude}, ${data.longitude}</p>
+                <p><strong>Available Forecasts:</strong> ${data.streamflow.join(", ")}</p>
+                <p><strong>Selected Forecast:</strong> ${forecastType.replace("_", " ").toUpperCase()}</p>
+                <h4>Upstream Reaches</h4>
+                <ul>${data.route.upstream.map(r => `<li>Reach ID: ${r.reachId} (Order: ${r.streamOrder})</li>`).join("")}</ul>
+                <h4>Downstream Reaches</h4>
+                <ul>${data.route.downstream.map(r => `<li>Reach ID: ${r.reachId} (Order: ${r.streamOrder})</li>`).join("")}</ul>
+            `;
+
+            // Simulated forecast data for selected type
+            const timestamps = Array.from({ length: 10 }, (_, i) => new Date(Date.now() + i * 3600000));
+            const flowValues = timestamps.map(() => (Math.random() * 200).toFixed(2));
+
+            displayChart(timestamps, flowValues);
+            displayTable(timestamps, flowValues);
+        }
+
+        function displayChart(times, flows) {
+            const ctx = document.getElementById('forecastChart').getContext('2d');
+            if (myChart) myChart.destroy();
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: times.map(t => t.toLocaleTimeString()),
+                    datasets: [{
+                        label: 'Streamflow Forecast (m³/s)',
+                        data: flows,
+                        borderColor: '#007bff',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { title: { display: true, text: 'm³/s' } },
+                        x: { title: { display: true, text: 'Time' } }
+                    }
+                }
+            });
+        }
+
+        function displayTable(times, flows) {
+            const table = document.getElementById('forecastTable');
+            table.innerHTML = `<tr><th>Time</th><th>Streamflow (m³/s)</th></tr>`;
+            times.forEach((time, index) => {
+                const row = table.insertRow();
+                row.insertCell().textContent = time.toLocaleString();
+                row.insertCell().textContent = flows[index];
+            });
+        }
+    </script>
+</body>
+</html>
