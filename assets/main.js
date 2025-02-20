@@ -24,6 +24,11 @@ allContents[tabNum - 1].classList.add('active');
       map4.invalidateSize();
     }, 50);
   }
+  if (tabNum === 6 && typeof map6 !== 'undefined') {
+    setTimeout(() => {
+      map6.invalidateSize();
+    }, 50);
+  }
 }
 
 // keep date/time updated
