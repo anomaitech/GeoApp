@@ -1,8 +1,6 @@
 let map6 = L.map('map6').setView([46.25, -119.2], 9);
 let featureGroup = L.featureGroup().addTo(map6);
 let cardMap = new Map();
-let currentPlot = null; // Keep this at the top level
-let updateInterval = null;
 
 // Initialize Base Map
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -38,12 +36,7 @@ function createCard(latlng, markerId) {
         marker.openPopup();
     });
 
-    const cardContainer = document.getElementById('card-container');
-    if (cardContainer) {
-        cardContainer.prepend(card);
-    } else {
-        console.error('Card container not found');
-    }
+    document.getElementById('card-container').prepend(card);
     return card;
 }
 
@@ -58,12 +51,7 @@ async function fetchCOMID(lon, lat) {
 async function updateCardAndFlowline(marker, comid) {
     // Update Card
     const cardInfo = cardMap.get(marker._leaflet_id);
-    if (cardInfo && cardInfo.card) {
-        const comidValueElement = cardInfo.card.querySelector('.comid-value');
-        if (comidValueElement) {
-            comidValueElement.textContent = comid;
-        }
-    }
+    cardInfo.card.querySelector('.comid-value').textContent = comid;
 
     // Add Flowline
     try {
@@ -88,147 +76,139 @@ async function updateCardAndFlowline(marker, comid) {
 
 // Forecast Visualization
 async function showForecastModal(comid) {
-    const modalComidElement = document.getElementById('modalComid');
     const dischargeModal = document.getElementById('dischargeModal');
+    document.getElementById('modalComid').textContent = comid;
+    dischargeModal.style.display = 'block';
 
-    if (modalComidElement && dischargeModal) {
-        modalComidElement.textContent = comid;
-        dischargeModal.style.display = 'block';
+    // Clear previous plots
+    ['dischargePlotShort', 'dischargePlotLong', 'returnPeriodPlot'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
+    });
 
-        if (updateInterval) clearInterval(updateInterval);
-        updateInterval = setInterval(() => updateDischargePlot(comid), 2000);
+    try {
         await updateDischargePlot(comid);
-    } else {
-        console.error('Modal elements not found');
+        await updateReturnPeriodPlot(comid);
+    } catch (error) {
+        console.error('Error updating plots:', error);
     }
 }
 
 async function updateDischargePlot(comid) {
     try {
-        // Fetch both short_range and long_range data
         const [shortRangeResponse, longRangeResponse] = await Promise.all([
             axios.get(`https://api.water.noaa.gov/nwps/v1/reaches/${comid}/streamflow?series=short_range`),
             axios.get(`https://api.water.noaa.gov/nwps/v1/reaches/${comid}/streamflow?series=long_range`)
         ]);
 
-        const shortRangeData = shortRangeResponse.data.shortRange?.series?.data;
-        const longRangeData = longRangeResponse.data.longRange?.series?.data;
+        // Process discharge data
+        const shortData = shortRangeResponse.data.shortRange?.series?.data || [];
+        const longData = longRangeResponse.data.longRange?.mean?.data || [];
 
-        console.log('Short Range Data:', shortRangeData);
-        console.log('Long Range Data:', longRangeData);
-
-        const traces = [];
-
-        if (shortRangeData && shortRangeData.length > 0) {
-            traces.push(createTrace(shortRangeData, 'Short Range', '#1f77b4'));
-        } else {
-            console.warn("No short-range forecast data available.");
-        }
-
-        if (longRangeData && longRangeData.length > 0) {
-            traces.push(createTrace(longRangeData, 'Long Range', '#ff7f0e'));
-        } else {
-            console.warn("No long-range forecast data available.");
-        }
-
-        console.log('Traces:', traces);
-
-        const layout = {
-            title: `Discharge Forecast (ft³/s) for Reach ID: ${comid}`,
-            xaxis: { title: 'Time', rangeslider: {} },
-            yaxis: { title: 'Discharge (ft³/s)' },
-            showlegend: true,
-            margin: { t: 40, b: 100 }
-        };
-
-        const dischargePlotElement = document.getElementById('dischargePlot');
-        if (dischargePlotElement) {
-            if (currentPlot) {
-                Plotly.react('dischargePlot', traces, layout);
-            } else {
-                currentPlot = Plotly.newPlot('dischargePlot', traces, layout);
-            }
-        } else {
-            console.error('Discharge plot element not found');
-        }
+        // Plot discharge forecasts
+        plotData('dischargePlotShort', shortData, 'Short Range Forecast', '#1f77b4');
+        plotData('dischargePlotLong', longData, 'Long Range Forecast', '#ff7f0e');
     } catch (error) {
-        console.error('Forecast update error:', error);
-        const dischargePlotElement = document.getElementById('dischargePlot');
-        if (dischargePlotElement) {
-            dischargePlotElement.innerHTML = `<p>Error fetching forecast data. Please try again later.</p>`;
-        }
-        if (updateInterval) clearInterval(updateInterval);
+        handlePlotError('discharge', error);
     }
 }
 
-function createTrace(forecasts, name, color) {
-    return {
-        x: forecasts.map(f => new Date(f.validTime)),
-        y: forecasts.map(f => f.flow),
-        mode: 'lines+markers',
-        name: name,
-        line: { color: color },
-        hoverinfo: 'x+y+name'
-    };
+async function updateReturnPeriodPlot(comid) {
+    try {
+        const response = await axios.get('https://nwm-api-updt-9f6idmxh.uc.gateway.dev/return-period', {
+            headers: { 'x-api-key': 'AIzaSyArCbLaEevrqrVPJDzu2OioM_kNmCBtsx8' },
+            params: {
+                comids: comid,
+                output_format: 'json',
+                order_by_comid: 'False'
+            }
+        });
+
+        const returnData = response.data;
+        if (returnData.length === 0) throw new Error('No return period data');
+
+        const periods = [2, 5, 10, 25, 50, 100];
+        const values = periods.map(p => returnData[0][`return_period_${p}`]);
+
+        Plotly.newPlot('returnPeriodPlot', [{
+            x: periods.map(p => `${p}-year`),
+            y: values,
+            type: 'bar',
+            marker: { color: '#2ca02c' }
+        }], {
+            title: 'Return Period Discharge Values (ft³/s)',
+            xaxis: { title: 'Return Period' },
+            yaxis: { title: 'Discharge' },
+            margin: { t: 40, b: 100 }
+        });
+    } catch (error) {
+        document.getElementById('returnPeriodPlot').innerHTML =
+            '<div class="plot-placeholder">Error loading return period data</div>';
+    }
 }
 
-// Utility Functions
+// Utility functions
+function plotData(containerId, data, title, color) {
+    if (data.length === 0) {
+        document.getElementById(containerId).innerHTML =
+            `<div class="plot-placeholder">No ${title.toLowerCase()} data available</div>`;
+        return;
+    }
+
+    Plotly.newPlot(containerId, [{
+        x: data.map(f => new Date(f.validTime)),
+        y: data.map(f => f.flow),
+        mode: 'lines+markers',
+        line: { color },
+        name: title
+    }], {
+        title: `${title} (ft³/s)`,
+        xaxis: { title: 'Time', rangeslider: {} },
+        yaxis: { title: 'Discharge' },
+        margin: { t: 40, b: 100 }
+    });
+}
+
+function handlePlotError(type, error) {
+    console.error(`${type} plot error:`, error);
+    const containers = type === 'discharge'
+        ? ['dischargePlotShort', 'dischargePlotLong']
+        : ['returnPeriodPlot'];
+
+    containers.forEach(id => {
+        document.getElementById(id).innerHTML =
+            '<div class="plot-placeholder">Error loading data</div>';
+    });
+}
+
 function clearAll() {
     featureGroup.clearLayers();
-    const cardContainer = document.getElementById('card-container');
-    if (cardContainer) {
-        cardContainer.innerHTML = '';
-    }
+    document.getElementById('card-container').innerHTML = '';
     cardMap.clear();
-    if (updateInterval) clearInterval(updateInterval);
 }
 
 function handleFetchError(marker, error) {
     console.error('Fetch error:', error);
     const cardInfo = cardMap.get(marker._leaflet_id);
-    if (cardInfo && cardInfo.card) {
-        const comidValueElement = cardInfo.card.querySelector('.comid-value');
-        if (comidValueElement) {
-            comidValueElement.textContent = '❌ Error';
-        }
-    }
+    cardInfo.card.querySelector('.comid-value').textContent = '❌ Error';
     marker.bindPopup('Failed to fetch data').openPopup();
 }
 
 // Event Listeners
-const clearAllButton = document.getElementById('clearAllButton');
-if (clearAllButton) {
-    clearAllButton.addEventListener('click', clearAll);
-}
+document.getElementById('clearAllButton').addEventListener('click', clearAll);
 
-const closeButton = document.querySelector('.close');
-if (closeButton) {
-    closeButton.addEventListener('click', () => {
-        const dischargeModal = document.getElementById('dischargeModal');
-        if (dischargeModal) {
-            dischargeModal.style.display = 'none';
-
-            // Clear the interval AND the plot when the modal is closed
-            if (updateInterval) clearInterval(updateInterval);
-            const dischargePlotElement = document.getElementById('dischargePlot');
-            if (dischargePlotElement) {
-                dischargePlotElement.innerHTML = '';  // Clear the plot's content
-                currentPlot = null; // Reset currentPlot
-            }
-        }
+document.querySelector('.close').addEventListener('click', () => {
+    document.getElementById('dischargeModal').style.display = 'none';
+    ['dischargePlotShort', 'dischargePlotLong', 'returnPeriodPlot'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
     });
-}
+});
 
 window.onclick = event => {
     const dischargeModal = document.getElementById('dischargeModal');
-    if (event.target == dischargeModal) {
+    if (event.target === dischargeModal) {
         dischargeModal.style.display = 'none';
-        // Clear the interval AND the plot when the modal is closed
-        if (updateInterval) clearInterval(updateInterval);
-        const dischargePlotElement = document.getElementById('dischargePlot');
-        if (dischargePlotElement) {
-            dischargePlotElement.innerHTML = '';  // Clear the plot's content
-            currentPlot = null; // Reset currentPlot
-        }
+        ['dischargePlotShort', 'dischargePlotLong', 'returnPeriodPlot'].forEach(id => {
+            document.getElementById(id).innerHTML = '';
+        });
     }
 };

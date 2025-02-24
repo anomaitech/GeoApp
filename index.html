@@ -389,20 +389,24 @@
 
   </div>
 <div class="tab-content" id="project6">
-        <h2>NWM Flowline Analysis and prediction</h2>
-        <p>Click anywhere on the map to get COMID for that location and see its closest stream</p>
-        <button id="clearAllButton">Clear All</button>
-        <div id="map6"></div>
-        <div id="card-container"></div>
+    <h2>NWM Flowline Analysis and prediction</h2>
+    <p>Click anywhere on the map to get COMID for that location and see its closest stream</p>
+    <button id="clearAllButton">Clear All</button>
+    <div id="map6"></div>
+    <div id="card-container"></div>
 
-        <div id="dischargeModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Discharge Forecast for COMID: <span id="modalComid"></span></h2>
-                <div id="dischargePlot"></div>
+    <div id="dischargeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Discharge Forecast for COMID: <span id="modalComid"></span></h2>
+            <div id="dischargePlotsContainer">
+                <div id="dischargePlotShort"></div>
+                <div id="dischargePlotLong"></div>
+                <div id="returnPeriodPlot"></div>
             </div>
         </div>
     </div>
+</div>
 
 
 

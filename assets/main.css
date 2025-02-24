@@ -286,3 +286,28 @@ th { background: #007bff; color: white; }
     border-radius: 8px; position: relative;
 }
 .close { position: absolute; right: 20px; top: 10px; font-size: 24px; cursor: pointer; }
+
+#dischargePlotsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#dischargePlotShort,
+#dischargePlotLong {
+    height: 400px;
+    width: 100%;
+}
+
+.plot-placeholder {
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    text-align: center;
+    color: #666;
+}
+#returnPeriodPlot {
+    height: 400px;
+    width: 100%;
+    margin-top: 20px;
+}
