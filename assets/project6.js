@@ -1,13 +1,15 @@
+const PROXY_URL = 'https://www.henok.x10.mx/index.php'; // Your PHP endpoint
+
+// Map initialization
 let map6 = L.map('map6').setView([46.25, -119.2], 9);
 let featureGroup = L.featureGroup().addTo(map6);
 let cardMap = new Map();
 
-// Initialize Base Map
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map6);
 
-// Map Click Handler
+// Event handlers
 map6.on('click', async e => {
     const marker = L.marker(e.latlng).addTo(featureGroup);
     const card = createCard(e.latlng, marker._leaflet_id);
@@ -21,13 +23,13 @@ map6.on('click', async e => {
     }
 });
 
-// Card Creation
+// Card management
 function createCard(latlng, markerId) {
     const card = document.createElement('div');
     card.className = 'comid-card';
     card.innerHTML = `
         <div class="coordinates">${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</div>
-        <div class="comid-value">⏳ Loading...</div>
+        <div class="comid-value">⏳ Loading COMID...</div>
     `;
 
     card.addEventListener('click', () => {
@@ -40,125 +42,136 @@ function createCard(latlng, markerId) {
     return card;
 }
 
-// Data Fetching Functions
+// Data fetching
 async function fetchCOMID(lon, lat) {
-    const response = await axios.get(
-        `https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/position?coords=POINT(${lon}%20${lat})`
-    );
-    return response.data.features[0].properties.comid;
+    try {
+        const response = await axios.get(
+            `https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/position?coords=POINT(${lon}%20${lat})`
+        );
+        return response.data.features[0].properties.comid;
+    } catch (error) {
+        throw new Error('Failed to fetch COMID');
+    }
 }
 
 async function updateCardAndFlowline(marker, comid) {
-    // Update Card
     const cardInfo = cardMap.get(marker._leaflet_id);
-    cardInfo.card.querySelector('.comid-value').textContent = comid;
+    const comidValue = cardInfo.card.querySelector('.comid-value');
+    comidValue.textContent = comid;
+    comidValue.style.color = '#28a745';
 
-    // Add Flowline
     try {
         const flowlineResponse = await axios.get(
             `https://labs.waterdata.usgs.gov/api/nldi/linked-data/comid/${comid}`
         );
 
         L.geoJSON(flowlineResponse.data, {
-            style: { color: '#0078d4', weight: 2 },
+            style: { color: '#007bff', weight: 3 },
             onEachFeature: (feature, layer) => {
                 layer.bindPopup(`COMID: ${comid}`);
-                layer.on('click', () => showForecastModal(comid));
+                layer.on('click', () => showAnalysisModal(comid));
             }
         }).addTo(featureGroup);
 
-        marker.bindPopup(`COMID: ${comid}`).on('click', () => showForecastModal(comid));
+        marker.bindPopup(`COMID: ${comid}`).on('click', () => showAnalysisModal(comid));
         map6.fitBounds(featureGroup.getBounds());
     } catch (error) {
-        console.error('Error fetching flowline data:', error);
+        console.error('Flowline error:', error);
+        comidValue.textContent = '❌ Flowline Error';
+        comidValue.style.color = '#dc3545';
     }
 }
 
-// Forecast Visualization
-async function showForecastModal(comid) {
-    const dischargeModal = document.getElementById('dischargeModal');
+// Analysis modal functions
+async function showAnalysisModal(comid) {
+    const modal = document.getElementById('dischargeModal');
     document.getElementById('modalComid').textContent = comid;
-    dischargeModal.style.display = 'block';
+    modal.style.display = 'block';
 
-    // Clear previous plots
+    // Show loading states
     ['dischargePlotShort', 'dischargePlotLong', 'returnPeriodPlot'].forEach(id => {
-        document.getElementById(id).innerHTML = '';
+        document.getElementById(id).innerHTML = '<div class="loading">Loading data...</div>';
     });
 
     try {
-        await updateDischargePlot(comid);
-        await updateReturnPeriodPlot(comid);
+        await Promise.all([
+            updateDischargePlot(comid),
+            updateReturnPeriodPlot(comid)
+        ]);
     } catch (error) {
-        console.error('Error updating plots:', error);
+        console.error('Analysis error:', error);
+        document.getElementById('returnPeriodPlot').innerHTML =
+            `<div class="error">${error.message}</div>`;
     }
 }
 
 async function updateDischargePlot(comid) {
     try {
-        const [shortRangeResponse, longRangeResponse] = await Promise.all([
+        const [shortRange, longRange] = await Promise.all([
             axios.get(`https://api.water.noaa.gov/nwps/v1/reaches/${comid}/streamflow?series=short_range`),
             axios.get(`https://api.water.noaa.gov/nwps/v1/reaches/${comid}/streamflow?series=long_range`)
         ]);
 
-        // Process discharge data
-        const shortData = shortRangeResponse.data.shortRange?.series?.data || [];
-        const longData = longRangeResponse.data.longRange?.mean?.data || [];
+        createDischargePlot('dischargePlotShort',
+            shortRange.data.shortRange?.series?.data,
+            'Short Range Forecast',
+            '#1f77b4'
+        );
 
-        // Plot discharge forecasts
-        plotData('dischargePlotShort', shortData, 'Short Range Forecast', '#1f77b4');
-        plotData('dischargePlotLong', longData, 'Long Range Forecast', '#ff7f0e');
+        createDischargePlot('dischargePlotLong',
+            longRange.data.longRange?.mean?.data,
+            'Long Range Forecast',
+            '#ff7f0e'
+        );
     } catch (error) {
-        handlePlotError('discharge', error);
+        handlePlotError('Forecast data unavailable');
     }
 }
 
 async function updateReturnPeriodPlot(comid) {
     try {
-        const response = await axios.get('https://nwm-api-updt-9f6idmxh.uc.gateway.dev/return-period', {
-            headers: { 'x-api-key': 'AIzaSyArCbLaEevrqrVPJDzu2OioM_kNmCBtsx8' },
-            params: {
-                comids: comid,
-                output_format: 'json',
-                order_by_comid: 'False'
-            }
+        const response = await axios.get(PROXY_URL, {
+            params: { comid: comid }
         });
 
-        const returnData = response.data;
-        if (returnData.length === 0) throw new Error('No return period data');
+        if (!response.data.success) {
+            throw new Error(response.data.error || 'Server error');
+        }
 
+        const data = response.data.data;
         const periods = [2, 5, 10, 25, 50, 100];
-        const values = periods.map(p => returnData[0][`return_period_${p}`]);
+        const values = periods.map(p => data[`return_period_${p}`]);
 
         Plotly.newPlot('returnPeriodPlot', [{
-            x: periods.map(p => `${p}-year`),
+            x: periods.map(p => `${p}-Year`),
             y: values,
             type: 'bar',
-            marker: { color: '#2ca02c' }
+            marker: { color: '#4CAF50' }
         }], {
-            title: 'Return Period Discharge Values (ft³/s)',
+            title: 'Return Period Discharge (ft³/s)',
             xaxis: { title: 'Return Period' },
             yaxis: { title: 'Discharge' },
             margin: { t: 40, b: 100 }
         });
     } catch (error) {
-        document.getElementById('returnPeriodPlot').innerHTML =
-            '<div class="plot-placeholder">Error loading return period data</div>';
+        throw new Error('Failed to load return periods: ' + error.message);
     }
 }
 
-// Utility functions
-function plotData(containerId, data, title, color) {
-    if (data.length === 0) {
-        document.getElementById(containerId).innerHTML =
-            `<div class="plot-placeholder">No ${title.toLowerCase()} data available</div>`;
+// Plot utilities
+function createDischargePlot(containerId, data, title, color) {
+    const container = document.getElementById(containerId);
+
+    if (!data || data.length === 0) {
+        container.innerHTML = `<div class="error">${title} data unavailable</div>`;
         return;
     }
 
-    Plotly.newPlot(containerId, [{
-        x: data.map(f => new Date(f.validTime)),
-        y: data.map(f => f.flow),
+    Plotly.newPlot(container, [{
+        x: data.map(d => new Date(d.validTime)),
+        y: data.map(d => d.flow),
         mode: 'lines+markers',
-        line: { color },
+        line: { color: color },
         name: title
     }], {
         title: `${title} (ft³/s)`,
@@ -168,18 +181,14 @@ function plotData(containerId, data, title, color) {
     });
 }
 
-function handlePlotError(type, error) {
-    console.error(`${type} plot error:`, error);
-    const containers = type === 'discharge'
-        ? ['dischargePlotShort', 'dischargePlotLong']
-        : ['returnPeriodPlot'];
-
-    containers.forEach(id => {
+function handlePlotError(message) {
+    ['dischargePlotShort', 'dischargePlotLong'].forEach(id => {
         document.getElementById(id).innerHTML =
-            '<div class="plot-placeholder">Error loading data</div>';
+            `<div class="error">${message}</div>`;
     });
 }
 
+// Cleanup functions
 function clearAll() {
     featureGroup.clearLayers();
     document.getElementById('card-container').innerHTML = '';
@@ -190,25 +199,17 @@ function handleFetchError(marker, error) {
     console.error('Fetch error:', error);
     const cardInfo = cardMap.get(marker._leaflet_id);
     cardInfo.card.querySelector('.comid-value').textContent = '❌ Error';
-    marker.bindPopup('Failed to fetch data').openPopup();
+    cardInfo.card.querySelector('.comid-value').style.color = '#dc3545';
+    marker.bindPopup('Data fetch failed').openPopup();
 }
 
-// Event Listeners
+// Event listeners
 document.getElementById('clearAllButton').addEventListener('click', clearAll);
-
 document.querySelector('.close').addEventListener('click', () => {
     document.getElementById('dischargeModal').style.display = 'none';
-    ['dischargePlotShort', 'dischargePlotLong', 'returnPeriodPlot'].forEach(id => {
-        document.getElementById(id).innerHTML = '';
-    });
 });
-
-window.onclick = event => {
-    const dischargeModal = document.getElementById('dischargeModal');
-    if (event.target === dischargeModal) {
-        dischargeModal.style.display = 'none';
-        ['dischargePlotShort', 'dischargePlotLong', 'returnPeriodPlot'].forEach(id => {
-            document.getElementById(id).innerHTML = '';
-        });
+window.addEventListener('click', e => {
+    if (e.target === document.getElementById('dischargeModal')) {
+        document.getElementById('dischargeModal').style.display = 'none';
     }
-};
+});
