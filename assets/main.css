@@ -306,8 +306,53 @@ th { background: #007bff; color: white; }
     text-align: center;
     color: #666;
 }
-#returnPeriodPlot {
+#dischargePlotShort,
+#dischargePlotLong {
     height: 400px;
     width: 100%;
-    margin-top: 20px;
+}
+
+/* Updated discharge plots layout */
+#dischargePlotsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    height: calc(100% - 40px); /* Adjust based on your needs */
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#dischargePlotShort,
+#dischargePlotLong {
+    height: 300px; /* Adjust based on your needs */
+}
+
+#returnPeriodPlot {
+    height: 620px; /* Combined height of both left plots + gap */
+    width: 100%;
+}
+/* Update modal dimensions */
+.modal-content {
+    width: 90%;
+    max-width: 1200px; /* Increased from 900px */
+}
+
+/* Adjust grid layout proportions */
+#dischargePlotsContainer {
+    grid-template-columns: 2fr 1fr; /* Makes right column wider */
+    gap: 30px; /* Increased gap */
+}
+
+/* Optional: Make plots taller to use extra width */
+#dischargePlotShort,
+#dischargePlotLong {
+    height: 350px; /* Increased from 300px */
+}
+
+#returnPeriodPlot {
+    height: 720px; /* Increased from 620px */
 }

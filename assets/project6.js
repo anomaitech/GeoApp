@@ -138,9 +138,12 @@ async function updateReturnPeriodPlot(comid) {
             throw new Error(response.data.error || 'Server error');
         }
 
-        const data = response.data.data;
+        const data = response.data.data[0];
         const periods = [2, 5, 10, 25, 50, 100];
         const values = periods.map(p => data[`return_period_${p}`]);
+        console.log('return period')
+        console.log(data)
+        console.log(values)
 
         Plotly.newPlot('returnPeriodPlot', [{
             x: periods.map(p => `${p}-Year`),
