@@ -1,4 +1,4 @@
-const PROXY_URL = 'https://www.henok.x10.mx/index.php'; // Your PHP endpoint
+const PROXY_URL = 'https://henok.x10.mx/index.php'; // Your PHP endpoint
 
 // Map initialization
 let map6 = L.map('map6').setView([46.25, -119.2], 9);

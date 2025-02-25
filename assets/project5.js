@@ -1,79 +1,94 @@
 let myChart = null;
 
-        async function getForecast() {
-            const reachId = document.getElementById('reachId').value.trim();
-            const forecastType = document.getElementById('forecastType').value;
+async function getForecast() {
+    const reachId = document.getElementById('reachId').value.trim();
+    const forecastType = document.getElementById('forecastType').value;
+    console.log(reachId);
+    if (!reachId) {
+        alert('Please enter a reach ID');
+        return;
+    }
 
-            if (!reachId) {
-                alert('Please enter a reach ID');
-                return;
+    try {
+        const [shortRange, longRange] = await Promise.all([
+            axios.get(`https://api.water.noaa.gov/nwps/v1/reaches/${reachId}/streamflow?series=short_range`),
+            axios.get(`https://api.water.noaa.gov/nwps/v1/reaches/${reachId}/streamflow?series=long_range`)
+        ]);
+
+        console.log("Short-Range Data:", shortRange.data.shortRange?.series?.data);
+        console.log("Long-Range Data:", longRange.data.longRange?.mean?.data);
+
+        displayReachInfo(shortRange.data, longRange.data, forecastType);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching forecast data');
+    }
+}
+
+function displayReachInfo(shortRangeData, longRangeData, forecastType) {
+    const infoDiv = document.getElementById('reachInfo');
+
+    infoDiv.innerHTML = `
+        <h3>Reach Information</h3>
+        <p><strong>Name:</strong> ${shortRangeData.reach?.name || "Unknown"}</p>
+        <p><strong>Coordinates:</strong> ${shortRangeData.reach?.latitude || "N/A"}, ${shortRangeData.reach?.longitude || "N/A"}</p>
+        <p><strong>Available Forecasts:</strong> Short-Range, Long-Range</p>
+        <p><strong>Selected Forecast:</strong> ${forecastType.replace("_", " ").toUpperCase()}</p>
+    `;
+
+    let forecastData;
+    if (forecastType === "short_range") {
+        forecastData = shortRangeData.shortRange?.series?.data || [];
+    } else if (forecastType === "long_range") {
+        forecastData = longRangeData.longRange?.mean?.data || [];
+    } else {
+        alert("Invalid forecast type selected or no data available.");
+        return;
+    }
+
+    if (!forecastData || !Array.isArray(forecastData) || forecastData.length === 0) {
+        alert("No forecast data available.");
+        return;
+    }
+
+    const timestamps = forecastData.map(entry => new Date(entry.validTime));
+    const flowValues = forecastData.map(entry => entry.flow);
+
+    displayChart(timestamps, flowValues, forecastType);
+    displayTable(timestamps, flowValues);
+}
+
+function displayChart(times, flows, forecastType) {
+    const ctx = document.getElementById('forecastChart').getContext('2d');
+    if (myChart) myChart.destroy();
+
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: times.map(t => t.toLocaleString()),
+            datasets: [{
+                label: `Streamflow Forecast (ft³/s) - ${forecastType.replace("_", " ").toUpperCase()}`,
+                data: flows,
+                borderColor: '#007bff',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { title: { display: true, text: 'ft³/s' } },
+                x: { title: { display: true, text: 'Time' } }
             }
-
-            try {
-                const response = await fetch(`https://api.water.noaa.gov/nwps/v1/reaches/${reachId}`);
-                if (!response.ok) throw new Error("Error fetching data");
-
-                const data = await response.json();
-                displayReachInfo(data, forecastType);
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error fetching forecast data');
-            }
         }
+    });
+}
 
-        function displayReachInfo(data, forecastType) {
-            const infoDiv = document.getElementById('reachInfo');
-            infoDiv.innerHTML = `
-                <h3>Reach Information</h3>
-                <p><strong>Name:</strong> ${data.name}</p>
-                <p><strong>Coordinates:</strong> ${data.latitude}, ${data.longitude}</p>
-                <p><strong>Available Forecasts:</strong> ${data.streamflow.join(", ")}</p>
-                <p><strong>Selected Forecast:</strong> ${forecastType.replace("_", " ").toUpperCase()}</p>
-                <h4>Upstream Reaches</h4>
-                <ul>${data.route.upstream.map(r => `<li>Reach ID: ${r.reachId} (Order: ${r.streamOrder})</li>`).join("")}</ul>
-                <h4>Downstream Reaches</h4>
-                <ul>${data.route.downstream.map(r => `<li>Reach ID: ${r.reachId} (Order: ${r.streamOrder})</li>`).join("")}</ul>
-            `;
-
-            // Simulated forecast data for selected type
-            const timestamps = Array.from({ length: 10 }, (_, i) => new Date(Date.now() + i * 3600000));
-            const flowValues = timestamps.map(() => (Math.random() * 200).toFixed(2));
-
-            displayChart(timestamps, flowValues);
-            displayTable(timestamps, flowValues);
-        }
-
-        function displayChart(times, flows) {
-            const ctx = document.getElementById('forecastChart').getContext('2d');
-            if (myChart) myChart.destroy();
-
-            myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: times.map(t => t.toLocaleTimeString()),
-                    datasets: [{
-                        label: 'Streamflow Forecast (m³/s)',
-                        data: flows,
-                        borderColor: '#007bff',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { title: { display: true, text: 'm³/s' } },
-                        x: { title: { display: true, text: 'Time' } }
-                    }
-                }
-            });
-        }
-
-        function displayTable(times, flows) {
-            const table = document.getElementById('forecastTable');
-            table.innerHTML = `<tr><th>Time</th><th>Streamflow (m³/s)</th></tr>`;
-            times.forEach((time, index) => {
-                const row = table.insertRow();
-                row.insertCell().textContent = time.toLocaleString();
-                row.insertCell().textContent = flows[index];
-            });
-        }
+function displayTable(times, flows) {
+    const table = document.getElementById('forecastTable');
+    table.innerHTML = `<tr><th>Time</th><th>Streamflow (ft³/s)</th></tr>`;
+    times.forEach((time, index) => {
+        const row = table.insertRow();
+        row.insertCell().textContent = time.toLocaleString();
+        row.insertCell().textContent = flows[index];
+    });
+}
